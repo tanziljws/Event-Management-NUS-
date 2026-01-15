@@ -209,13 +209,6 @@ class _CustomTicketBuilderState extends State<CustomTicketBuilder> with TickerPr
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: _ticket.colorValue.withOpacity(0.3),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../auth/bloc/auth_bloc.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../shared/widgets/standard_page_header.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -11,14 +12,13 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: AppConstants.primaryColor,
-        foregroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-      ),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: Column(
+        children: [
+          StandardPageHeader(
+            title: 'Settings',
+          ),
+          Expanded(
+            child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           if (state is AuthAuthenticated) {
             return _buildSettingsList(context, state);
@@ -27,6 +27,9 @@ class SettingsPage extends StatelessWidget {
             child: Text('Please log in to access settings'),
           );
         },
+      ),
+          ),
+        ],
       ),
     );
   }
@@ -187,7 +190,7 @@ class SettingsPage extends StatelessWidget {
       ),
       subtitle: Text(
         subtitle,
-        style: const TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.black87),
       ),
       trailing: const Icon(Icons.chevron_right),
       onTap: onTap,
@@ -210,7 +213,7 @@ class SettingsPage extends StatelessWidget {
       ),
       subtitle: Text(
         subtitle,
-        style: const TextStyle(color: Colors.grey),
+        style: TextStyle(color: Colors.black87),
       ),
       trailing: Switch(
         value: value,
@@ -224,12 +227,22 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Change Password'),
-        content: const Text('This feature will be available soon.'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Change Password',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: const Text(
+          'This feature will be available soon.',
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -256,13 +269,20 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose Theme'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Choose Theme',
+          style: TextStyle(color: Colors.black),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Light'),
-              leading: const Icon(Icons.light_mode),
+              title: const Text(
+                'Light',
+                style: TextStyle(color: Colors.black),
+              ),
+              leading: const Icon(Icons.light_mode, color: Colors.black),
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -271,8 +291,11 @@ class SettingsPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Dark'),
-              leading: const Icon(Icons.dark_mode),
+              title: const Text(
+                'Dark',
+                style: TextStyle(color: Colors.black),
+              ),
+              leading: const Icon(Icons.dark_mode, color: Colors.black),
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -281,8 +304,11 @@ class SettingsPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('System'),
-              leading: const Icon(Icons.settings),
+              title: const Text(
+                'System',
+                style: TextStyle(color: Colors.black),
+              ),
+              leading: const Icon(Icons.settings, color: Colors.black),
               onTap: () {
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -300,12 +326,19 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose Language'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Choose Language',
+          style: TextStyle(color: Colors.black),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('English'),
+              title: const Text(
+                'English',
+                style: TextStyle(color: Colors.black),
+              ),
               leading: const Text('🇺🇸'),
               onTap: () {
                 Navigator.pop(context);
@@ -315,7 +348,10 @@ class SettingsPage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Bahasa Indonesia'),
+              title: const Text(
+                'Bahasa Indonesia',
+                style: TextStyle(color: Colors.black),
+              ),
               leading: const Text('🇮🇩'),
               onTap: () {
                 Navigator.pop(context);
@@ -334,16 +370,24 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Privacy Policy'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Privacy Policy',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const SingleChildScrollView(
           child: Text(
             'This is a placeholder for the privacy policy. In a real app, this would contain the actual privacy policy text.',
+            style: TextStyle(color: Colors.black),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -354,16 +398,24 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Terms of Service'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Terms of Service',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const SingleChildScrollView(
           child: Text(
             'This is a placeholder for the terms of service. In a real app, this would contain the actual terms and conditions.',
+            style: TextStyle(color: Colors.black),
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -374,22 +426,38 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Contact Us'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Contact Us',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Email: support@eventmanagement.com'),
+            Text(
+              'Email: support@eventmanagement.com',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('Phone: +62 123 456 7890'),
+            Text(
+              'Phone: +62 123 456 7890',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('Address: Jakarta, Indonesia'),
+            Text(
+              'Address: Jakarta, Indonesia',
+              style: TextStyle(color: Colors.black),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -400,24 +468,43 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('About'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'About',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nusa App'),
+            Text(
+              'Nusa App',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('Version: 1.0.0'),
+            Text(
+              'Version: 1.0.0',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('Build: 2024.01.01'),
+            Text(
+              'Build: 2024.01.01',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('© 2024 Nusa Team'),
+            Text(
+              '© 2024 Nusa Team',
+              style: TextStyle(color: Colors.black),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
+            child: const Text(
+              'Close',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -428,12 +515,22 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: const Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           TextButton(
             onPressed: () {
@@ -441,7 +538,10 @@ class SettingsPage extends StatelessWidget {
               context.read<AuthBloc>().add(AuthLogoutRequested());
               context.go('/login');
             },
-            child: const Text('Logout'),
+            child: const Text(
+              'Logout',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -452,14 +552,22 @@ class SettingsPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Account'),
+        backgroundColor: Colors.white,
+        title: const Text(
+          'Delete Account',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const Text(
           'Are you sure you want to delete your account? This action cannot be undone.',
+          style: TextStyle(color: Colors.black),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           TextButton(
             onPressed: () {

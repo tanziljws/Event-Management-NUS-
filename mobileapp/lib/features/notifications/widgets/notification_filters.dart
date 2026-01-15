@@ -44,15 +44,15 @@ class NotificationFilters extends StatelessWidget {
                 onFilterChanged(selected ? filter['key'] as String? : null);
               },
               backgroundColor: Colors.white,
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: const Color(0xFF2563EB), // Primary blue
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey[700],
+                color: isSelected ? Colors.white : Colors.black87,
                 fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
               ),
               side: BorderSide(
-                color: isSelected ? Theme.of(context).primaryColor : Colors.grey[300]!,
-                width: 1,
+                color: isSelected ? const Color(0xFF2563EB) : Colors.grey[300]!,
+                width: isSelected ? 2 : 1,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),

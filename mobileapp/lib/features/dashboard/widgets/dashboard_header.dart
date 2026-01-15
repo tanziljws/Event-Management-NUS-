@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../../../shared/services/switch_account_service.dart';
 import '../../../shared/widgets/switch_account_splash.dart';
+import '../../../core/constants/api_constants.dart';
+import 'dashboard_greeting.dart';
 
 class DashboardHeader extends StatelessWidget {
   final AuthAuthenticated authState;
@@ -54,26 +56,11 @@ class DashboardHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03), // Lighter shadow
-            blurRadius: 6, // Reduced blur
-            offset: const Offset(0, 1), // Reduced offset
-          ),
-        ],
       ),
       child: Row(
         children: [
           // Profile Avatar
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: const Color(0xFF2563EB).withOpacity(0.1),
-            child: Icon(
-              Icons.person,
-              color: const Color(0xFF2563EB),
-              size: 32,
-            ),
-          ),
+          _buildProfileAvatar(authState.user),
           const SizedBox(width: 16),
           
           // Profile Details
@@ -81,15 +68,8 @@ class DashboardHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  authState.user.fullName,
-                  style: const TextStyle(
-                    color: Color(0xFF1E293B),
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 4),
+                DashboardGreeting(userName: authState.user.fullName),
+                const SizedBox(height: 8),
                 Text(
                   authState.user.email,
                   style: const TextStyle(
@@ -246,24 +226,6 @@ class DashboardHeader extends StatelessWidget {
     );
   }
 
-  String _getRoleDisplayName(String role, {String? verificationStatus}) {
-    switch (role.toLowerCase()) {
-      case 'admin':
-        return 'Administrator';
-      case 'organizer':
-        // Only show as Event Organizer if verification is APPROVED
-        if (verificationStatus == 'APPROVED') {
-          return 'Event Organizer';
-        } else {
-          return 'Participant'; // Show as Participant until approved
-        }
-      case 'participant':
-        return 'Participant';
-      default:
-        return 'Participant';
-    }
-  }
-
   Color _getRoleColor(String role) {
     switch (role.toUpperCase()) {
       case 'ORGANIZER':
@@ -314,5 +276,52 @@ class DashboardHeader extends StatelessWidget {
       default:
         return 'Unknown';
     }
+  }
+
+  String _getImageUrl(String? url) {
+    if (url == null || url.isEmpty) return '';
+    
+    // If already full URL, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If starts with /, it's a relative path
+    if (url.startsWith('/')) {
+      return '${ApiConstants.fileBaseUrl}$url';
+    }
+    
+    // Otherwise, prepend base URL with /
+    return '${ApiConstants.fileBaseUrl}/$url';
+  }
+
+  Widget _buildProfileAvatar(dynamic user) {
+    final profilePictureUrl = user.profilePicture;
+    final imageUrl = profilePictureUrl != null && profilePictureUrl.isNotEmpty
+        ? _getImageUrl(profilePictureUrl)
+        : null;
+
+    debugPrint('📸 Dashboard - Profile picture URL: $profilePictureUrl');
+    debugPrint('📸 Dashboard - Final image URL: $imageUrl');
+
+    return CircleAvatar(
+      radius: 30,
+      backgroundColor: const Color(0xFF2563EB).withOpacity(0.1),
+      backgroundImage: imageUrl != null && imageUrl.isNotEmpty
+          ? NetworkImage(imageUrl) as ImageProvider?
+          : null,
+      onBackgroundImageError: (exception, stackTrace) {
+        // Handle image loading error - will show fallback icon
+        debugPrint('❌ Dashboard - Error loading profile image: $exception');
+        debugPrint('❌ Dashboard - Image URL was: $imageUrl');
+      },
+      child: imageUrl == null || imageUrl.isEmpty
+          ? Icon(
+              Icons.person,
+              color: const Color(0xFF2563EB),
+              size: 32,
+            )
+          : null,
+    );
   }
 }

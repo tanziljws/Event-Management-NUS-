@@ -17,26 +17,26 @@ class NotificationSearchBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
+        style: const TextStyle(
+          fontSize: 14,
+          color: Colors.grey,
+          fontWeight: FontWeight.w400,
+        ),
+        cursorColor: Colors.grey,
         decoration: InputDecoration(
           hintText: 'Search notifications...',
           hintStyle: TextStyle(
             color: Colors.grey[500],
             fontSize: 14,
+            fontWeight: FontWeight.w400,
           ),
           prefixIcon: Icon(
             Icons.search,
-            color: Colors.grey[500],
+            color: Colors.grey[600],
             size: 20,
           ),
           suffixIcon: controller.text.isNotEmpty
@@ -47,18 +47,19 @@ class NotificationSearchBar extends StatelessWidget {
                   },
                   icon: Icon(
                     Icons.clear,
-                    color: Colors.grey[500],
+                    color: Colors.grey[600],
                     size: 20,
                   ),
                 )
               : null,
           border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 16,
             vertical: 12,
           ),
         ),
-        style: const TextStyle(fontSize: 14),
       ),
     );
   }

@@ -220,7 +220,7 @@ class _PaymentModalSimpleState extends State<PaymentModalSimple> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        elevation: 2,
+                        elevation: 0,
                       ),
                       child: _isLoading
                           ? const SizedBox(
@@ -886,7 +886,7 @@ class _PaymentModalSimpleState extends State<PaymentModalSimple> {
   }
 }
 
-class PaymentSuccessDialog extends StatelessWidget {
+class PaymentSuccessDialog extends StatefulWidget {
   final Map<String, dynamic> payment;
   final VoidCallback onComplete;
 
@@ -897,68 +897,230 @@ class PaymentSuccessDialog extends StatelessWidget {
   });
 
   @override
+  State<PaymentSuccessDialog> createState() => _PaymentSuccessDialogState();
+}
+
+class _PaymentSuccessDialogState extends State<PaymentSuccessDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Opacity(
+              opacity: _fadeAnimation.value,
       child: Container(
-        padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 64,
-            ),
-            const SizedBox(height: 16),
-            Text(
+                    // Header
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
+                      decoration: BoxDecoration(
+                        color: AppConstants.primaryColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.payment_rounded,
+                              color: Colors.white,
+                              size: 60,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
               'Payment Created!',
               style: TextStyle(
-                fontSize: 20,
+                              fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: AppConstants.textPrimary,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          // Amount Card
+                          Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: AppConstants.successColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: AppConstants.successColor.withOpacity(0.3),
+                                width: 1.5,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.account_balance_wallet_rounded,
+                                      color: AppConstants.successColor,
+                                      size: 24,
+                                    ),
+                                    const SizedBox(width: 8),
+            Text(
+                                      'Total Pembayaran',
+              style: TextStyle(
+                                        fontSize: 14,
+                color: AppConstants.textSecondary,
+                                        fontWeight: FontWeight.w500,
               ),
             ),
-            const SizedBox(height: 8),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
             Text(
-              'Amount: Rp ${_formatCurrency(double.parse(payment['amount'].toString()))}',
+                                  'Rp ${_formatCurrency(double.parse(widget.payment['amount'].toString()))}',
               style: TextStyle(
-                fontSize: 16,
-                color: AppConstants.textSecondary,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Please complete your payment using the selected method. You will be automatically registered once payment is confirmed.',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppConstants.textSecondary,
-              ),
-              textAlign: TextAlign.center,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppConstants.successColor,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ],
+                            ),
             ),
             const SizedBox(height: 20),
+
+                          // Info Box
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: Colors.blue.shade200,
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(
+                                  Icons.info_outline_rounded,
+                                  color: Colors.blue.shade700,
+                                  size: 22,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    'Please complete your payment using the selected method. You will be automatically registered once payment is confirmed.',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.blue.shade900,
+                                      height: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+
+                          // Continue Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: onComplete,
+                              onPressed: widget.onComplete,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppConstants.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(14),
                   ),
+                                elevation: 0,
                 ),
                 child: const Text(
                   'Continue',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
                   ),
                 ),
               ),
             ),
           ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -971,7 +1133,7 @@ class PaymentSuccessDialog extends StatelessWidget {
   }
 }
 
-class RegistrationSuccessDialog extends StatelessWidget {
+class RegistrationSuccessDialog extends StatefulWidget {
   final String eventTitle;
   final int quantity;
   final String ticketTypeName;
@@ -990,87 +1152,202 @@ class RegistrationSuccessDialog extends StatelessWidget {
   });
 
   @override
+  State<RegistrationSuccessDialog> createState() => _RegistrationSuccessDialogState();
+}
+
+class _RegistrationSuccessDialogState extends State<RegistrationSuccessDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    );
+
+    _scaleAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.elasticOut,
+    ));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeIn,
+    ));
+
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: _scaleAnimation.value,
+            child: Opacity(
+              opacity: _fadeAnimation.value,
       child: Container(
-        padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(24),
+                ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+                    // Header
             Container(
-              width: 80,
-              height: 80,
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.1),
+                        color: widget.isExisting
+                            ? Colors.orange.shade500
+                            : AppConstants.successColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(24),
+                          topRight: Radius.circular(24),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          // Success Icon with animation
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
                 shape: BoxShape.circle,
-              ),
-              child: const Icon(
-                Icons.check_circle,
-                color: Colors.green,
-                size: 50,
+                            ),
+                            child: Icon(
+                              widget.isExisting
+                                  ? Icons.info_outline
+                                  : Icons.check_circle_rounded,
+                              color: Colors.white,
+                              size: 60,
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              isExisting ? 'Anda Sudah Terdaftar!' : 'Registrasi Berhasil! 🎉',
+                            widget.isExisting
+                                ? 'Anda Sudah Terdaftar!'
+                                : 'Registrasi Berhasil! 🎉',
               style: const TextStyle(
-                fontSize: 22,
+                              fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                              color: Colors.white,
+                              letterSpacing: 0.5,
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 12),
-            Text(
-              eventTitle,
+                        ],
+                      ),
+                    ),
+
+                    // Content
+                    Padding(
+                      padding: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          // Event Title
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppConstants.primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: AppConstants.primaryColor.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.event,
+                                  color: AppConstants.primaryColor,
+                                  size: 20,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    widget.eventTitle,
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[700],
-                fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppConstants.textPrimary,
               ),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
             ),
             const SizedBox(height: 20),
+
+                          // Details Card
             Container(
-              padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
+                              color: AppConstants.primaryColor.withOpacity(0.05),
+                              borderRadius: BorderRadius.circular(16),
                 border: Border.all(
-                  color: Colors.blue.shade200,
-                  width: 1,
+                                color: AppConstants.primaryColor.withOpacity(0.2),
+                                width: 1.5,
                 ),
               ),
               child: Column(
                 children: [
                   _buildDetailRow(
-                    icon: Icons.confirmation_number,
+                                  icon: Icons.confirmation_number_rounded,
                     label: 'Tipe Tiket',
-                    value: ticketTypeName,
+                                  value: widget.ticketTypeName,
                   ),
-                  const SizedBox(height: 12),
+                                const SizedBox(height: 16),
                   _buildDetailRow(
-                    icon: Icons.shopping_cart,
+                                  icon: Icons.shopping_cart_rounded,
                     label: 'Jumlah Tiket',
-                    value: '$quantity ${quantity > 1 ? 'tiket' : 'tiket'}',
+                                  value: '${widget.quantity} ${widget.quantity > 1 ? 'tiket' : 'tiket'}',
                   ),
-                  if (registrationId != null && registrationId!.isNotEmpty) ...[
-                    const SizedBox(height: 12),
+                                if (widget.registrationId != null &&
+                                    widget.registrationId!.isNotEmpty) ...[
+                                  const SizedBox(height: 16),
                     _buildDetailRow(
-                      icon: Icons.fingerprint,
+                                    icon: Icons.fingerprint_rounded,
                       label: 'Registration ID',
-                      value: registrationId!.length > 8 
-                          ? registrationId!.substring(0, 8).toUpperCase()
-                          : registrationId!.toUpperCase(),
+                                    value: widget.registrationId!.length > 8
+                                        ? widget.registrationId!
+                                            .substring(0, 8)
+                                            .toUpperCase()
+                                        : widget.registrationId!.toUpperCase(),
                       valueStyle: TextStyle(
-                        fontSize: 12,
+                                      fontSize: 13,
                         fontFamily: 'monospace',
-                        color: Colors.grey[600],
+                                      fontWeight: FontWeight.w600,
+                                      color: AppConstants.primaryColor,
+                                      letterSpacing: 1.2,
                       ),
                     ),
                   ],
@@ -1078,28 +1355,46 @@ class RegistrationSuccessDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
+
+                          // Info Box
             Container(
-              padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.amber.shade50,
-                borderRadius: BorderRadius.circular(8),
+                              color: widget.isExisting
+                                  ? Colors.orange.shade50
+                                  : Colors.blue.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: widget.isExisting
+                                    ? Colors.orange.shade200
+                                    : Colors.blue.shade200,
+                                width: 1,
+                              ),
               ),
               child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Icon(
-                    Icons.info_outline,
-                    color: Colors.amber.shade700,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
+                                  widget.isExisting
+                                      ? Icons.info_outline_rounded
+                                      : Icons.email_outlined,
+                                  color: widget.isExisting
+                                      ? Colors.orange.shade700
+                                      : Colors.blue.shade700,
+                                  size: 22,
+                                ),
+                                const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      isExisting
+                                    widget.isExisting
                           ? 'Anda sudah terdaftar untuk event ini dengan tipe tiket yang sama.'
                           : 'Tiket akan dikirim ke email Anda. Silakan cek email untuk detail tiket dan QR code.',
                       style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.amber.shade900,
+                                      fontSize: 13,
+                                      color: widget.isExisting
+                                          ? Colors.orange.shade900
+                                          : Colors.blue.shade900,
+                                      height: 1.4,
                       ),
                     ),
                   ),
@@ -1107,30 +1402,41 @@ class RegistrationSuccessDialog extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
+
+                          // Close Button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: onClose,
+                              onPressed: widget.onClose,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppConstants.primaryColor,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                                padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(14),
                   ),
-                  elevation: 2,
+                  elevation: 0,
                 ),
                 child: const Text(
                   'Tutup',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  letterSpacing: 0.5,
                   ),
                 ),
               ),
             ),
           ],
+                      ),
+                    ),
+                  ],
+                ),
         ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -1141,12 +1447,25 @@ class RegistrationSuccessDialog extends StatelessWidget {
     required String value,
     TextStyle? valueStyle,
   }) {
-    return Row(
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
       children: [
-        Icon(
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: AppConstants.primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(
           icon,
-          size: 18,
-          color: Colors.blue.shade700,
+              size: 20,
+              color: AppConstants.primaryColor,
+            ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1157,22 +1476,25 @@ class RegistrationSuccessDialog extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Colors.grey[600],
+                    color: AppConstants.textSecondary,
+                    fontWeight: FontWeight.w500,
                 ),
               ),
-              const SizedBox(height: 2),
+                const SizedBox(height: 4),
               Text(
                 value,
-                style: valueStyle ?? TextStyle(
-                  fontSize: 14,
+                  style: valueStyle ??
+                      TextStyle(
+                        fontSize: 15,
                   fontWeight: FontWeight.bold,
-                  color: Colors.blue.shade900,
+                        color: AppConstants.textPrimary,
                 ),
               ),
             ],
           ),
         ),
       ],
+      ),
     );
   }
 }

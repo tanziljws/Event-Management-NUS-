@@ -185,7 +185,7 @@ class RejectionDetailsModal extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      elevation: 2,
+                      elevation: 0,
                     ),
                     child: const Text(
                       'Re-apply',

@@ -141,20 +141,6 @@ class _EOPromoBannerSeparateState extends State<EOPromoBannerSeparate>
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withOpacity(0.2),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: const Color(0xFF1E40AF).withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -236,13 +222,6 @@ class _EOPromoBannerSeparateState extends State<EOPromoBannerSeparate>
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Text(
                           buttonText,
@@ -281,20 +260,6 @@ class _EOPromoBannerSeparateState extends State<EOPromoBannerSeparate>
           ],
         ),
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF3B82F6).withOpacity(0.2),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-            spreadRadius: 0,
-          ),
-          BoxShadow(
-            color: const Color(0xFF1E40AF).withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-            spreadRadius: 0,
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -376,13 +341,6 @@ class _EOPromoBannerSeparateState extends State<EOPromoBannerSeparate>
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: const Text(
                             'Daftar Sekarang',

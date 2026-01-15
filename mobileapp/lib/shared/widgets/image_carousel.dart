@@ -107,13 +107,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
             height: widget.height,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(0), // No rounded corners
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(0), // No rounded corners
@@ -171,13 +164,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
                         decoration: BoxDecoration(
                           color: Colors.black.withOpacity(0.7),
                           borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Text(
                           widget.priceText!,
@@ -202,13 +188,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.8),
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: () {
@@ -242,13 +221,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.8),
                             shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
-                                blurRadius: 4,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: () {
@@ -352,14 +324,6 @@ class _ImageCarouselState extends State<ImageCarousel> {
                               : Colors.transparent,
                           width: 2,
                         ),
-                        boxShadow: [
-                          if (_currentIndex == index)
-                            BoxShadow(
-                              color: const Color(0xFF2563EB).withOpacity(0.3),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                        ],
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6),

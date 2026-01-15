@@ -47,13 +47,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03), // Lighter shadow
-                      blurRadius: 6, // Reduced blur
-                      offset: const Offset(0, 1), // Reduced offset
-                    ),
-                  ],
                 ),
                 child: Column(
                   children: [
@@ -621,13 +614,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
         border: Border.all(
           color: const Color(0xFF059669).withOpacity(0.1),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -1021,13 +1007,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -1289,13 +1268,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -1581,13 +1553,6 @@ class _QuickActionsSectionState extends State<QuickActionsSection> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,

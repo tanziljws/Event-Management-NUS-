@@ -298,13 +298,6 @@ class _PricingPageState extends State<PricingPage> with TickerProviderStateMixin
                     color: isSelected ? colors['border'] : Colors.grey[200]!,
                     width: isSelected ? 2 : 1,
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(isSelected ? 0.08 : 0.03),
-                      blurRadius: isSelected ? 8 : 4,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
                 ),
                 child: Column(
                   children: [

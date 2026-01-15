@@ -149,13 +149,6 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ],
           ),
           child: TextField(
             controller: _controller,
@@ -187,7 +180,8 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
                 vertical: 12,
               ),
             ),
-            style: const TextStyle(fontSize: 14),
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+            cursorColor: Colors.grey,
           ),
         ),
         
@@ -198,13 +192,6 @@ class _LocationSearchBarState extends State<LocationSearchBar> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
             ),
             child: Column(
               children: [

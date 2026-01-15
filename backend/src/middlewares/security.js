@@ -37,6 +37,7 @@ const generalRateLimitMiddleware = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     return next(); // Skip rate limiting in development
   }
+  
   return generalRateLimit(req, res, next);
 };
 
@@ -52,6 +53,7 @@ const authRateLimitMiddleware = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     return next(); // Skip rate limiting in development
   }
+  
   return authRateLimit(req, res, next);
 };
 
@@ -66,6 +68,7 @@ const passwordResetRateLimit = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     return next(); // Skip rate limiting in development
   }
+  
   return passwordResetRateLimitInstance(req, res, next);
 };
 
@@ -80,6 +83,7 @@ const emailVerificationRateLimit = (req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     return next(); // Skip rate limiting in development
   }
+  
   return emailVerificationRateLimitInstance(req, res, next);
 };
 

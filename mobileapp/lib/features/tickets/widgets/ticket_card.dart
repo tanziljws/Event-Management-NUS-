@@ -30,14 +30,6 @@ class TicketCard extends StatelessWidget {
       height: cardHeight,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 16,
-            offset: const Offset(0, 6),
-            spreadRadius: 0,
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),

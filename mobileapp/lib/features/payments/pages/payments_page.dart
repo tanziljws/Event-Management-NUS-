@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../shared/widgets/bottom_navigation.dart';
+import '../../../shared/widgets/standard_page_header.dart';
 import '../../auth/bloc/auth_bloc.dart';
 import '../bloc/payment_bloc.dart';
 
@@ -33,13 +34,13 @@ class _PaymentsPageState extends State<PaymentsPage> {
 
         return Scaffold(
           backgroundColor: AppConstants.backgroundColor,
-          appBar: AppBar(
-            title: const Text('Pembayaran Saya'),
-            backgroundColor: AppConstants.cardColor,
-            foregroundColor: AppConstants.textPrimary,
-            elevation: 0,
-          ),
-          body: BlocBuilder<PaymentBloc, PaymentState>(
+          body: Column(
+            children: [
+              StandardPageHeader(
+                title: 'Pembayaran Saya',
+              ),
+              Expanded(
+                child: BlocBuilder<PaymentBloc, PaymentState>(
             builder: (context, state) {
               if (state is PaymentLoading) {
                 return const Center(child: CircularProgressIndicator());
@@ -51,6 +52,9 @@ class _PaymentsPageState extends State<PaymentsPage> {
                 return _buildEmptyState();
               }
             },
+          ),
+              ),
+            ],
           ),
           bottomNavigationBar: const BottomNavigation(currentIndex: 4),
         );
@@ -71,7 +75,7 @@ class _PaymentsPageState extends State<PaymentsPage> {
         final payment = payments[index];
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
-          elevation: 2,
+          elevation: 0,
           color: AppConstants.cardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

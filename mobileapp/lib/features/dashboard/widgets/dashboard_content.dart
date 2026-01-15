@@ -5,10 +5,15 @@ import '../../auth/bloc/auth_bloc.dart';
 import '../../organizer/bloc/organizer_bloc.dart' as organizer_bloc;
 import '../../../shared/utils/currency_formatter.dart';
 import '../../../shared/services/switch_account_service.dart';
+import '../../../shared/services/registration_service.dart';
+import '../../../shared/services/event_service.dart';
+import '../../../shared/models/event_model.dart';
 import 'dashboard_header.dart';
 import 'dashboard_stats.dart';
 import 'dashboard_quick_actions.dart';
 import 'dashboard_recent_events.dart';
+import 'dashboard_todays_tasks.dart';
+import 'dashboard_upcoming_section.dart';
 import 'organizer_chart.dart';
 
 class DashboardContent extends StatefulWidget {
@@ -24,10 +29,15 @@ class DashboardContent extends StatefulWidget {
 }
 
 class _DashboardContentState extends State<DashboardContent> {
+  List<EventModel> _upcomingEvents = [];
+  List<EventModel> _expiringEvents = [];
+  bool _isLoadingEvents = true;
+
   @override
   void initState() {
     super.initState();
     _loadOrganizerDashboard();
+    _loadUpcomingEvents();
   }
 
   void _loadOrganizerDashboard() async {
@@ -36,6 +46,96 @@ class _DashboardContentState extends State<DashboardContent> {
       context.read<organizer_bloc.OrganizerBloc>().add(
         organizer_bloc.LoadOrganizerDashboard(organizerId: widget.authState.user.id),
       );
+    }
+  }
+
+  Future<void> _loadUpcomingEvents() async {
+    setState(() {
+      _isLoadingEvents = true;
+    });
+
+    try {
+      final isParticipant = await _isParticipant(widget.authState.user);
+      final isOrganizer = await _isApprovedOrganizer(widget.authState.user);
+
+      if (isParticipant) {
+        // Load user registrations for participant
+        final registrationsResult = await RegistrationService.getUserRegistrations(
+          page: 1,
+          limit: 20,
+        );
+
+        if (registrationsResult['success'] == true) {
+          final registrations = registrationsResult['registrations'] as List;
+          final events = (registrations as List)
+              .map((reg) {
+                try {
+                  if (reg['event'] != null) {
+                    return EventModel.fromJson(reg['event']);
+                  }
+                  return null;
+                } catch (e) {
+                  return null;
+                }
+              })
+              .whereType<EventModel>()
+              .where((event) {
+                // Filter upcoming events (next 7 days)
+                final now = DateTime.now();
+                final eventDate = event.eventDate;
+                final daysUntil = eventDate.difference(now).inDays;
+                return daysUntil >= 0 && daysUntil <= 7;
+              })
+              .toList();
+
+          setState(() {
+            _upcomingEvents = events;
+            _expiringEvents = events.where((event) {
+              final now = DateTime.now();
+              final eventDate = event.eventDate;
+              if (eventDate == null) return false;
+              final daysUntil = eventDate.difference(now).inDays;
+              return daysUntil >= 0 && daysUntil <= 7;
+            }).toList();
+            _isLoadingEvents = false;
+          });
+        }
+      } else if (isOrganizer) {
+        // Load organizer events
+        final eventService = EventService();
+        final eventsResult = await eventService.getMyEvents(
+          page: 1,
+          limit: 20,
+        );
+
+        if (eventsResult['success'] == true) {
+          final events = (eventsResult['events'] as List)
+              .map((e) => EventModel.fromJson(e))
+              .where((event) {
+                // Filter upcoming events (next 7 days)
+                final now = DateTime.now();
+                final eventDate = event.eventDate;
+                final daysUntil = eventDate.difference(now).inDays;
+                return daysUntil >= 0 && daysUntil <= 7;
+              })
+              .toList();
+
+          setState(() {
+            _upcomingEvents = events;
+            _expiringEvents = events;
+            _isLoadingEvents = false;
+          });
+        }
+      } else {
+        setState(() {
+          _isLoadingEvents = false;
+        });
+      }
+    } catch (e) {
+      print('Error loading upcoming events: $e');
+      setState(() {
+        _isLoadingEvents = false;
+      });
     }
   }
 
@@ -57,14 +157,14 @@ class _DashboardContentState extends State<DashboardContent> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Profile Information
+                    // Profile Information with Greeting
                     DashboardHeader(authState: widget.authState),
                     const SizedBox(height: 24),
 
                     // Stats Cards (only for participants)
                     if (isParticipant) ...[
                       const DashboardStats(),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
                     ],
 
                     // Organizer Dashboard (only for approved organizers)
@@ -72,12 +172,33 @@ class _DashboardContentState extends State<DashboardContent> {
                       _buildOrganizerDashboard(context),
                       const SizedBox(height: 24),
                       _buildOrganizerChart(context),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
+                    ],
+
+                    // Today's Tasks Section
+                    if (!_isLoadingEvents && _upcomingEvents.isNotEmpty) ...[
+                      DashboardTodaysTasks(
+                        upcomingEvents: _upcomingEvents,
+                        isOrganizer: isApprovedOrganizer,
+                        onSeeAll: () => context.go(isApprovedOrganizer ? '/my-events' : '/my-registrations'),
+                      ),
+                      const SizedBox(height: 24),
+                    ],
+
+                    // Expiring/Upcoming Section
+                    if (!_isLoadingEvents && _expiringEvents.isNotEmpty) ...[
+                      DashboardUpcomingSection(
+                        events: _expiringEvents,
+                        title: isApprovedOrganizer ? 'Upcoming Events' : 'Upcoming Events',
+                        badgeText: '${_expiringEvents.length}',
+                        seeAllRoute: isApprovedOrganizer ? '/my-events' : '/my-registrations',
+                      ),
+                      const SizedBox(height: 24),
                     ],
 
                     // Quick Actions
                     DashboardQuickActions(authState: widget.authState),
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 24),
 
                     // Latest Events Section
                     const DashboardRecentEvents(),

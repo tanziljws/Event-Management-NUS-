@@ -61,6 +61,8 @@ class _SearchBarState extends State<SearchBar> {
       enabled: widget.enabled,
       onChanged: widget.onChanged,
       onSubmitted: widget.onSubmitted,
+      style: const TextStyle(color: Colors.grey),
+      cursorColor: Colors.grey,
       decoration: InputDecoration(
         hintText: widget.hintText,
         hintStyle: TextStyle(color: Colors.grey[500]),

@@ -112,7 +112,7 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey.shade800,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 8),
@@ -122,7 +122,7 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: Colors.black87,
               ),
             ),
             const SizedBox(height: 16),
@@ -167,7 +167,7 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey.shade700,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -175,16 +175,18 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
                   controller: _passwordController,
                   obscureText: _obscurePassword,
                   enabled: !_isLoading,
+                  style: const TextStyle(color: Colors.black),
                   decoration: InputDecoration(
                     hintText: 'Enter event password',
+                    hintStyle: TextStyle(color: Colors.grey.shade600),
                     prefixIcon: Icon(
                       Icons.lock_outline,
-                      color: Colors.grey.shade400,
+                      color: Colors.grey.shade600,
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.grey.shade400,
+                        color: Colors.grey.shade600,
                       ),
                       onPressed: () {
                         setState(() {
@@ -260,7 +262,7 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
                     child: Text(
                       'Cancel',
                       style: TextStyle(
-                        color: Colors.grey.shade700,
+                        color: Colors.black,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -316,7 +318,7 @@ class _PrivateEventModalState extends State<PrivateEventModal> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade500,
+                color: Colors.black87,
               ),
             ),
           ],

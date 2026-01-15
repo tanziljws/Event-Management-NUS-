@@ -12,7 +12,6 @@ class SafeScaffold extends StatelessWidget {
   final Color? backgroundColor;
   final bool? resizeToAvoidBottomInset;
   final bool primary;
-  final DragStartBehavior drawerDragStartBehavior;
   final bool extendBody;
   final bool extendBodyBehindAppBar;
   final Color? drawerScrimColor;
@@ -33,7 +32,6 @@ class SafeScaffold extends StatelessWidget {
     this.backgroundColor,
     this.resizeToAvoidBottomInset,
     this.primary = true,
-    this.drawerDragStartBehavior = DragStartBehavior.start,
     this.extendBody = false,
     this.extendBodyBehindAppBar = false,
     this.drawerScrimColor,
@@ -59,7 +57,6 @@ class SafeScaffold extends StatelessWidget {
             backgroundColor: backgroundColor,
             resizeToAvoidBottomInset: resizeToAvoidBottomInset,
             primary: primary,
-            drawerDragStartBehavior: drawerDragStartBehavior,
             extendBody: extendBody,
             extendBodyBehindAppBar: extendBodyBehindAppBar,
             drawerScrimColor: drawerScrimColor,

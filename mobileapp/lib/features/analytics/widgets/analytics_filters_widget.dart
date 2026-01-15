@@ -44,13 +44,6 @@ class _AnalyticsFiltersWidgetState extends State<AnalyticsFiltersWidget> {
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
-                  blurRadius: 6,
-                  offset: const Offset(0, 1),
-                ),
-              ],
             ),
             child: TextField(
               controller: _searchController,

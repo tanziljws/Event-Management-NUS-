@@ -20,6 +20,9 @@ class UserModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   
+  // Profile fields
+  final String? profilePicture;
+  
   // Organizer fields
   final String? organizerType;
   final String? verificationStatus;
@@ -57,6 +60,7 @@ class UserModel {
     required this.tokenVersion,
     required this.createdAt,
     required this.updatedAt,
+    this.profilePicture,
     this.organizerType,
     this.verificationStatus,
     this.verifiedAt,
@@ -101,6 +105,7 @@ class UserModel {
       updatedAt: json['updatedAt'] != null 
           ? DateTime.parse(json['updatedAt']) 
           : DateTime.now(),
+      profilePicture: json['profilePicture']?.toString(),
       organizerType: json['organizerType']?.toString(),
       verificationStatus: json['verificationStatus']?.toString(),
       verifiedAt: json['verifiedAt'] != null 
@@ -148,6 +153,7 @@ class UserModel {
       'tokenVersion': tokenVersion,
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt.toIso8601String(),
+      'profilePicture': profilePicture,
       'organizerType': organizerType,
       'verificationStatus': verificationStatus,
       'verifiedAt': verifiedAt?.toIso8601String(),
@@ -182,6 +188,7 @@ class UserModel {
     int? tokenVersion,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? profilePicture,
     String? organizerType,
     String? verificationStatus,
     DateTime? verifiedAt,
@@ -214,6 +221,7 @@ class UserModel {
       tokenVersion: tokenVersion ?? this.tokenVersion,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      profilePicture: profilePicture ?? this.profilePicture,
       organizerType: organizerType ?? this.organizerType,
       verificationStatus: verificationStatus ?? this.verificationStatus,
       verifiedAt: verifiedAt ?? this.verifiedAt,

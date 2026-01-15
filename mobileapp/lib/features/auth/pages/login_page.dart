@@ -368,19 +368,13 @@ class _LoginPageState extends State<LoginPage> {
                           decoration: BoxDecoration(
                             color: const Color(0xFF2563EB),
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: const Color(0xFF2563EB).withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
                           ),
                           child: ElevatedButton(
                             onPressed: _handleLogin,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               shadowColor: Colors.transparent,
+                              elevation: 0,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),

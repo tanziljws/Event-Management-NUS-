@@ -16,14 +16,8 @@ class NotificationSettings extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey[200]!),
       ),
       child: Column(
         children: [
@@ -36,17 +30,25 @@ class NotificationSettings extends StatelessWidget {
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.settings,
-                  color: Colors.grey[600],
-                  size: 20,
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2563EB).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(
+                    Icons.settings,
+                    color: Color(0xFF2563EB),
+                    size: 20,
+                  ),
                 ),
-                const SizedBox(width: 8),
-                Text(
+                const SizedBox(width: 12),
+                const Text(
                   'Notification Settings',
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Colors.grey[700],
+                    color: Colors.black87,
+                    fontSize: 16,
                   ),
                 ),
               ],
@@ -116,16 +118,16 @@ class NotificationSettings extends StatelessWidget {
         children: [
           // Icon
           Container(
-            width: 40,
-            height: 40,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
+              color: const Color(0xFF2563EB).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(
               icon,
-              color: Colors.blue,
-              size: 20,
+              color: const Color(0xFF2563EB),
+              size: 24,
             ),
           ),
           
@@ -138,16 +140,18 @@ class NotificationSettings extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     color: Colors.black87,
+                    fontSize: 15,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: TextStyle(
                     color: Colors.grey[600],
+                    fontSize: 13,
                   ),
                 ),
               ],
@@ -162,7 +166,8 @@ class NotificationSettings extends StatelessWidget {
               newSettings[key] = value;
               onSettingsChanged(newSettings);
             },
-            activeThumbColor: Colors.blue,
+            activeColor: const Color(0xFF2563EB),
+            activeTrackColor: const Color(0xFF2563EB).withOpacity(0.5),
           ),
         ],
       ),

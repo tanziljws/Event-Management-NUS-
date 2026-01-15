@@ -189,7 +189,7 @@ class _CertificatesPageState extends State<CertificatesPage> {
         final certificate = _certificates[index];
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
-          elevation: 2,
+          elevation: 0,
           color: AppConstants.cardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -231,85 +231,222 @@ class _CertificatesPageState extends State<CertificatesPage> {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: AppConstants.successColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        'Tersedia',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: AppConstants.successColor,
-                        ),
-                      ),
+                    // Status Badge
+                    Builder(
+                      builder: (context) {
+                        final statusInfo = _getStatusInfo(certificate.status);
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: statusInfo['color'].withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                statusInfo['icon'],
+                                size: 14,
+                                color: statusInfo['color'],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                statusInfo['label'],
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                  color: statusInfo['color'],
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.confirmation_number,
-                      size: 16,
-                      color: AppConstants.textMuted,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'No. Sertifikat: ${certificate.certificateNumber}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppConstants.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Icon(
-                      Icons.calendar_today,
-                      size: 16,
-                      color: AppConstants.textMuted,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Diterbitkan: ${_formatDate(certificate.issuedAt)}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppConstants.textMuted,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => _viewCertificate(certificate),
-                        icon: const Icon(Icons.visibility),
-                        label: const Text('Lihat'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () => _downloadCertificate(certificate),
-                        icon: const Icon(Icons.download),
-                        label: const Text('Download'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppConstants.primaryColor,
-                          foregroundColor: Colors.white,
+                // Certificate Number (only if available)
+                if (certificate.certificateNumber != null && certificate.certificateNumber!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.confirmation_number,
+                          size: 16,
+                          color: AppConstants.textMuted,
                         ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            'No. Sertifikat: ${certificate.certificateNumber}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppConstants.textMuted,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                // Issued Date (only if available)
+                if (certificate.issuedAt != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          size: 16,
+                          color: AppConstants.textMuted,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Diterbitkan: ${_formatDate(certificate.issuedAt)}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppConstants.textMuted,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                // Event End DateTime (if pending/ready)
+                if (certificate.status != 'available' && certificate.eventEndDateTime != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.schedule,
+                          size: 16,
+                          color: AppConstants.warningColor,
+                        ),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: Text(
+                            'Event selesai: ${_formatDateTime(certificate.eventEndDateTime)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppConstants.warningColor,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                // Status Message
+                if (certificate.status != 'available')
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppConstants.primaryColor.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: AppConstants.primaryColor.withOpacity(0.3),
                       ),
                     ),
-                  ],
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: AppConstants.primaryColor,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _getStatusInfo(certificate.status)['message'],
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppConstants.textPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 8),
+                // Action Buttons
+                Builder(
+                  builder: (context) {
+                    if (certificate.status == 'available') {
+                      // Available - Show View & Download
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: certificate.certificateUrl != null && certificate.certificateUrl!.isNotEmpty
+                                  ? () => _viewCertificate(certificate)
+                                  : null,
+                              icon: const Icon(Icons.visibility),
+                              label: const Text('Lihat'),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: certificate.certificateUrl != null && certificate.certificateUrl!.isNotEmpty
+                                  ? () => _downloadCertificate(certificate)
+                                  : null,
+                              icon: const Icon(Icons.download),
+                              label: const Text('Download'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppConstants.primaryColor,
+                                foregroundColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    } else if (certificate.status == 'ready') {
+                      // Ready - Show Generate Button
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _isLoading
+                              ? null
+                              : () => _generateCertificate(certificate.registration.id),
+                          icon: _isLoading
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                  ),
+                                )
+                              : const Icon(Icons.auto_awesome),
+                          label: Text(_isLoading ? 'Generating...' : 'Generate Certificate'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppConstants.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Pending - Show Disabled Button
+                      return SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: null,
+                          icon: const Icon(Icons.schedule),
+                          label: const Text('Event Belum Selesai'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey[300],
+                            foregroundColor: Colors.grey[600],
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                        ),
+                      );
+                    }
+                  },
                 ),
               ],
             ),
@@ -363,13 +500,107 @@ class _CertificatesPageState extends State<CertificatesPage> {
   }
 
 
-  String _formatDate(DateTime date) {
+  String _formatDate(DateTime? date) {
+    if (date == null) return '-';
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  void _viewCertificate(CertificateModel certificate) async {
+  String _formatDateTime(String? dateTime) {
+    if (dateTime == null || dateTime.isEmpty) return '-';
     try {
-      final certificateUrl = _certificateService.getCertificateUrl(certificate.certificateUrl);
+      final date = DateTime.parse(dateTime);
+      return '${date.day}/${date.month}/${date.year} ${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
+    } catch (e) {
+      return dateTime;
+    }
+  }
+
+  Map<String, dynamic> _getStatusInfo(String? status) {
+    switch (status) {
+      case 'available':
+        return {
+          'label': 'Tersedia',
+          'color': AppConstants.successColor,
+          'icon': Icons.check_circle,
+          'message': 'Sertifikat siap diunduh',
+        };
+      case 'ready':
+        return {
+          'label': 'Siap Digenerate',
+          'color': AppConstants.primaryColor,
+          'icon': Icons.auto_awesome,
+          'message': 'Event sudah selesai, sertifikat dapat digenerate',
+        };
+      case 'pending':
+      default:
+        return {
+          'label': 'Menunggu',
+          'color': AppConstants.warningColor,
+          'icon': Icons.schedule,
+          'message': 'Event belum selesai',
+        };
+    }
+  }
+
+  Future<void> _generateCertificate(String registrationId) async {
+    try {
+      setState(() {
+        _isLoading = true;
+        _error = null;
+      });
+
+      final response = await _certificateService.generateCertificate(registrationId);
+
+      if (response['success'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Sertifikat berhasil digenerate!'),
+            backgroundColor: AppConstants.successColor,
+          ),
+        );
+        // Reload certificates
+        _loadCertificates();
+      } else {
+        setState(() {
+          _error = response['message'] ?? 'Gagal generate sertifikat';
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_error!),
+            backgroundColor: AppConstants.errorColor,
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error: $e';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error generate sertifikat: $e'),
+          backgroundColor: AppConstants.errorColor,
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _viewCertificate(CertificateModel certificate) async {
+    if (certificate.certificateUrl == null || certificate.certificateUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sertifikat belum tersedia'),
+          backgroundColor: AppConstants.errorColor,
+        ),
+      );
+      return;
+    }
+
+    try {
+      final certificateUrl = _certificateService.getCertificateUrl(certificate.certificateUrl!);
       
       // Show PDF viewer
       await showDialog(
@@ -489,8 +720,18 @@ class _CertificatesPageState extends State<CertificatesPage> {
   }
 
   void _downloadCertificate(CertificateModel certificate) async {
+    if (certificate.certificateUrl == null || certificate.certificateUrl!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sertifikat belum tersedia'),
+          backgroundColor: AppConstants.errorColor,
+        ),
+      );
+      return;
+    }
+
     try {
-      final certificateUrl = _certificateService.getCertificateUrl(certificate.certificateUrl);
+      final certificateUrl = _certificateService.getCertificateUrl(certificate.certificateUrl!);
       await _openCertificateInBrowser(certificateUrl);
       
       ScaffoldMessenger.of(context).showSnackBar(

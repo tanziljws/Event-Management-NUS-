@@ -22,13 +22,6 @@ class HomeHeader extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         color: AppConstants.primaryColor, // Blue background to match bottom nav
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
       ),
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top + 16,

@@ -179,13 +179,6 @@ class _SearchModalState extends State<SearchModal> {
       padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
@@ -213,13 +206,6 @@ class _SearchModalState extends State<SearchModal> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    blurRadius: 6,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
               ),
               child: TextField(
                 controller: _searchController,
@@ -269,7 +255,8 @@ class _SearchModalState extends State<SearchModal> {
                     vertical: 16,
                   ),
                 ),
-                style: const TextStyle(fontSize: 14),
+                style: const TextStyle(fontSize: 14, color: Colors.grey),
+                cursorColor: Colors.grey,
               ),
             ),
           ),
@@ -381,7 +368,7 @@ class _SearchModalState extends State<SearchModal> {
             'Searching events...',
             style: TextStyle(
               fontSize: 16,
-              color: Colors.grey,
+              color: Colors.black87,
             ),
           ),
         ],
@@ -407,7 +394,7 @@ class _SearchModalState extends State<SearchModal> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 8),
@@ -415,7 +402,7 @@ class _SearchModalState extends State<SearchModal> {
               'Try adjusting your search terms or filters',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.grey[600],
+                color: Colors.black87,
               ),
               textAlign: TextAlign.center,
             ),
@@ -438,14 +425,17 @@ class _SearchModalState extends State<SearchModal> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.grey[700],
+                  color: Colors.black,
                 ),
               ),
               const Spacer(),
               if (_showFilters)
                 TextButton(
                   onPressed: _clearFilters,
-                  child: const Text('Clear Filters'),
+                  child: const Text(
+                    'Clear Filters',
+                    style: TextStyle(color: Colors.black),
+                  ),
                 ),
             ],
           ),
@@ -512,7 +502,7 @@ class _SearchModalState extends State<SearchModal> {
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.grey[700],
+            color: Colors.black,
           ),
         ),
         const SizedBox(height: 12),
@@ -541,7 +531,7 @@ class _SearchModalState extends State<SearchModal> {
                 child: Text(
                   suggestion,
                   style: TextStyle(
-                    color: Colors.grey[700],
+                    color: Colors.black,
                     fontSize: 14,
                   ),
                 ),
@@ -565,7 +555,7 @@ class _SearchModalState extends State<SearchModal> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[700],
+                color: Colors.black,
               ),
             ),
             CustomTrashButton(

@@ -137,13 +137,6 @@ class _QRCodeModalState extends State<QRCodeModal> {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.grey[200]!),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: QrImageView(
                     data: widget.ticket.registrationToken,
@@ -225,7 +218,7 @@ class _QRCodeModalState extends State<QRCodeModal> {
                           'Show this QR code at the event entrance for check-in',
                           style: TextStyle(
                             fontSize: 14,
-                            color: Color(0xFF64748B),
+                            color: Colors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

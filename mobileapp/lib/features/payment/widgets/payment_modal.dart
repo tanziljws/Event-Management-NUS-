@@ -7,6 +7,11 @@ class PaymentModal extends StatefulWidget {
   final String eventId;
   final String eventTitle;
   final double amount;
+  final String customerName;
+  final String customerEmail;
+  final String customerPhone;
+  final int? quantity;
+  final String? ticketTypeId;
   final VoidCallback onPaymentSuccess;
 
   const PaymentModal({
@@ -14,6 +19,11 @@ class PaymentModal extends StatefulWidget {
     required this.eventId,
     required this.eventTitle,
     required this.amount,
+    required this.customerName,
+    required this.customerEmail,
+    required this.customerPhone,
+    this.quantity,
+    this.ticketTypeId,
     required this.onPaymentSuccess,
   });
 
@@ -238,7 +248,7 @@ class _PaymentModalState extends State<PaymentModal> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        elevation: 2,
+                        elevation: 0,
                       ),
                       child: _isLoading
                           ? const SizedBox(
@@ -275,14 +285,15 @@ class _PaymentModalState extends State<PaymentModal> {
     });
 
     try {
-      // Create payment
-      final response = await _paymentService.createEventPayment(
+      // Create payment using static method
+      final response = await PaymentService.createEventPayment(
         eventId: widget.eventId,
         amount: widget.amount,
         customerName: widget.customerName,
         customerEmail: widget.customerEmail,
         customerPhone: widget.customerPhone,
-        paymentMethod: _selectedPaymentMethod,
+        quantity: widget.quantity,
+        ticketTypeId: widget.ticketTypeId,
       );
 
       if (response['success'] == true) {

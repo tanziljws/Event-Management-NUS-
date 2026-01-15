@@ -65,7 +65,7 @@ class DashboardRecentEvents extends StatelessWidget {
 
   Widget _buildLatestEventCard(dynamic event) {
     return Card(
-      elevation: 2,
+      elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -209,7 +209,7 @@ class DashboardRecentEvents extends StatelessWidget {
       children: List.generate(3, (index) => Padding(
         padding: const EdgeInsets.only(bottom: 12),
         child: Card(
-          elevation: 2,
+          elevation: 0,
           color: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -270,7 +270,7 @@ class DashboardRecentEvents extends StatelessWidget {
 
   Widget _buildEmptyEvents() {
     return Card(
-      elevation: 2,
+      elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -309,7 +309,7 @@ class DashboardRecentEvents extends StatelessWidget {
 
   Widget _buildErrorEvents(String message) {
     return Card(
-      elevation: 2,
+      elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),

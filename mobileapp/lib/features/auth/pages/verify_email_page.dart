@@ -287,13 +287,6 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> with TickerProviderSt
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(16),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppConstants.primaryColor.withOpacity(0.3),
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
                           ),
                           child: ElevatedButton(
                             onPressed: _handleVerifyEmail,

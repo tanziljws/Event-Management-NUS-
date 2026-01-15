@@ -25,7 +25,7 @@ class EventCard extends StatelessWidget {
     final isRegistrationClosed = _isRegistrationClosed();
     
     return Card(
-      elevation: 4,
+      elevation: 0,
       color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
@@ -178,13 +178,6 @@ class EventCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.orange.shade600,
                         borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

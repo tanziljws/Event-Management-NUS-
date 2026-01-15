@@ -29,9 +29,6 @@ import 'features/tickets/pages/ticket_detail_page.dart';
 import 'features/upgrade/pages/upgrade_page.dart';
 import 'features/pricing/pages/pricing_page.dart';
 import 'features/support/pages/support_page.dart';
-import 'features/notifications/bloc/notification_bloc.dart';
-import 'core/network/api_client.dart';
-import 'core/services/notification_service.dart';
 import 'features/onboarding/pages/onboarding_page.dart';
 import 'features/onboarding/pages/reset_onboarding_page.dart';
 import 'features/onboarding/pages/organizer_onboarding_page.dart';
@@ -219,8 +216,9 @@ class AppRouter {
           GoRoute(
             path: 'edit/:eventId',
             builder: (context, state) {
-              final eventId = state.pathParameters['eventId'] ?? '';
-              return CreateEventPage(); // TODO: Pass eventId for editing
+              // TODO: Pass eventId for editing
+              // final eventId = state.pathParameters['eventId'] ?? '';
+              return CreateEventPage();
             },
           ),
         ],
@@ -288,7 +286,6 @@ class AppRouter {
       GoRoute(
         path: '/tickets/detail/:ticketId',
         builder: (context, state) {
-          final ticketId = state.pathParameters['ticketId'] ?? '';
           final ticket = state.extra as dynamic; // Ticket
           return TicketDetailPage(ticket: ticket);
         },
@@ -358,13 +355,7 @@ class AppRouter {
       // Notification Routes
       GoRoute(
         path: '/notifications',
-        builder: (context, state) => BlocProvider(
-          create: (context) => NotificationBloc(
-            apiClient: ApiClient(),
-            notificationService: NotificationService(),
-          ),
-          child: const SimpleMainNavigation(initialIndex: 3),
-        ),
+        builder: (context, state) => const SimpleMainNavigation(initialIndex: 3),
       ),
 
       // Error Route

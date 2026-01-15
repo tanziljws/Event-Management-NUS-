@@ -72,13 +72,6 @@ class MyEventsFilter extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFF2563EB),
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2563EB).withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
               ),
               child: const Icon(
                 Icons.add,

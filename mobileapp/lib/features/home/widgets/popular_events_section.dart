@@ -521,13 +521,6 @@ class _PopularEventsSectionState extends State<PopularEventsSection>
       margin: const EdgeInsets.only(right: 16),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: Material(
         color: Colors.transparent,
@@ -588,13 +581,6 @@ class _PopularEventsSectionState extends State<PopularEventsSection>
                         decoration: BoxDecoration(
                           color: Colors.orange.shade600,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.3),
-                              blurRadius: 4,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -729,13 +715,6 @@ class _PopularEventsSectionState extends State<PopularEventsSection>
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.03), // Lighter shadow
-                  blurRadius: 6, // Reduced blur
-                  offset: const Offset(0, 1), // Reduced offset
-                ),
-              ],
             ),
             child: SkeletonLoading.shimmer(
               child: Column(
@@ -805,13 +784,6 @@ class _PopularEventsSectionState extends State<PopularEventsSection>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.03), // Lighter shadow
-            blurRadius: 6, // Reduced blur
-            offset: const Offset(0, 1), // Reduced offset
-          ),
-        ],
       ),
       child: Center(
         child: Column(

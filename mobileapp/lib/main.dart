@@ -13,9 +13,8 @@ import 'features/auth/bloc/auth_bloc.dart';
 import 'features/events/bloc/event_bloc.dart';
 import 'features/registration/bloc/registration_bloc.dart';
 import 'features/tickets/bloc/tickets_bloc.dart';
-// import 'features/notifications/bloc/notification_bloc.dart';
-// import 'features/notifications/bloc/realtime_notification_bloc.dart';
-// import 'core/services/notification_service.dart';
+import 'features/notifications/bloc/notification_bloc.dart';
+import 'core/services/notification_service.dart';
 import 'features/attendance/bloc/attendance_bloc.dart';
 import 'features/organizer/bloc/organizer_bloc.dart';
 import 'features/organizer/services/organizer_service.dart';
@@ -166,16 +165,13 @@ class EventManagementApp extends StatelessWidget {
         BlocProvider<TicketsBloc>(
           create: (context) => TicketsBloc(),
         ),
-        // Notification providers temporarily disabled for location discovery testing
-        // BlocProvider<NotificationBloc>(
-        //   create: (context) => NotificationBloc(
-        //     apiClient: ApiClient(),
-        //     notificationService: NotificationService(),
-        //   ),
-        // ),
-        // BlocProvider<RealtimeNotificationBloc>(
-        //   create: (context) => RealtimeNotificationBloc(),
-        // ),
+        // Notification providers
+        BlocProvider<NotificationBloc>(
+          create: (context) => NotificationBloc(
+            apiClient: ApiClient(),
+            notificationService: NotificationService(),
+          ),
+        ),
         BlocProvider<AttendanceBloc>(
           create: (context) => AttendanceBloc(),
         ),

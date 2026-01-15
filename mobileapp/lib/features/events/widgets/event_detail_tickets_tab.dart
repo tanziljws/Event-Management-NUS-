@@ -181,13 +181,6 @@ class _EventDetailTicketsTabState extends State<EventDetailTicketsTab> {
           border: isSelected
               ? Border.all(color: Colors.white, width: 3)
               : null,
-          boxShadow: [
-            BoxShadow(
-              color: ticket.colorValue.withOpacity(isSelected ? 0.5 : 0.3),
-              blurRadius: isSelected ? 16 : 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Padding(
           padding: const EdgeInsets.all(16),

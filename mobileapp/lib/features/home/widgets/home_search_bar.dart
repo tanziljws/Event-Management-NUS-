@@ -18,15 +18,10 @@ class HomeSearchBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8), // Remove horizontal margin since parent already has padding
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: TextField(
+        style: const TextStyle(color: Colors.grey),
+        cursorColor: Colors.grey,
         decoration: InputDecoration(
           hintText: hintText ?? 'Search events, venues, or categories...',
           hintStyle: TextStyle(

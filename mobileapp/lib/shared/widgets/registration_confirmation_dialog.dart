@@ -36,7 +36,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Theme.of(context).primaryColor,
+                color: Colors.black,
               ),
             ),
           ),
@@ -65,6 +65,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -79,7 +80,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
                       Text(
                         _formatDate(event.eventDate),
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: Colors.black87,
                           fontSize: 14,
                         ),
                       ),
@@ -98,7 +99,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
                         child: Text(
                           event.location,
                           style: TextStyle(
-                            color: Colors.grey[600],
+                            color: Colors.black87,
                             fontSize: 14,
                           ),
                         ),
@@ -117,7 +118,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 12),
@@ -236,7 +237,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
           child: Text(
             'Batal',
             style: TextStyle(
-              color: Colors.grey[600],
+              color: Colors.black,
               fontWeight: FontWeight.w500,
             ),
           ),
@@ -287,7 +288,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[600],
+                    color: Colors.black87,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -297,6 +298,7 @@ class RegistrationConfirmationDialog extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
+                    color: Colors.black,
                   ),
                 ),
               ],

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../features/events/bloc/event_bloc.dart';
-import '../../features/auth/bloc/auth_bloc.dart';
 import '../models/event_model.dart';
 import 'optimized_image.dart';
 import 'performance_optimizer.dart';
@@ -28,7 +25,7 @@ class OptimizedEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return PerformanceOptimizer(
       child: Card(
-        elevation: 2,
+        elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -48,8 +45,14 @@ class OptimizedEventCard extends StatelessWidget {
   }
 
   Widget _buildEventImage(BuildContext context) {
+    // Get image URL from thumbnailUrl, galleryUrls, or flyerUrl
+    final imageUrl = event.thumbnailUrl ?? 
+                     (event.galleryUrls.isNotEmpty ? event.galleryUrls[0] : null) ?? 
+                     event.flyerUrl ?? 
+                     '';
+    
     final imageWidget = OptimizedAspectImage(
-      imageUrl: event.imageUrl ?? '',
+      imageUrl: imageUrl,
       aspectRatio: 16 / 9,
       borderRadius: const BorderRadius.only(
         topLeft: Radius.circular(12),
@@ -59,9 +62,8 @@ class OptimizedEventCard extends StatelessWidget {
 
     if (enableHeroAnimation) {
       return OptimizedHeroImage(
-        imageUrl: event.imageUrl ?? '',
+        imageUrl: imageUrl,
         heroTag: 'event_image_${event.id}',
-        aspectRatio: 16 / 9,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(12),
           topRight: Radius.circular(12),
@@ -119,7 +121,7 @@ class OptimizedEventCard extends StatelessWidget {
         const SizedBox(height: 4),
         _buildDetailRow(
           Icons.location_on,
-          event.location ?? 'Location TBA',
+          event.location,
           Colors.red,
         ),
       ],
@@ -161,8 +163,8 @@ class OptimizedEventCard extends StatelessWidget {
   }
 
   Widget _buildPriceTag() {
-    final isFree = event.isFree ?? true;
-    final price = event.price ?? 0;
+    final isFree = event.isFree;
+    final price = event.price ?? 0.0;
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -182,47 +184,46 @@ class OptimizedEventCard extends StatelessWidget {
   }
 
   Widget _buildRegistrationStatus(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
-      builder: (context, authState) {
-        if (authState is AuthAuthenticated) {
-          return BlocBuilder<EventBloc, EventState>(
-            builder: (context, eventState) {
-              final isRegistered = eventState.registeredEvents.contains(event.id);
-              
-              if (isRegistered) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green[100],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const OptimizedText(
-                    'REGISTERED',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                );
-              }
-            },
-          );
-        }
-        
-        return const SizedBox.shrink();
-      },
-    );
+    // Use event.isRegistered if available
+    if (event.isRegistered == true) {
+      return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.green[100],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: const OptimizedText(
+          'REGISTERED',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+      );
+    }
+    
+    return const SizedBox.shrink();
   }
 
   String _formatEventDate() {
-    final date = DateTime.parse(event.eventDate);
-    return DateFormat('MMM dd, yyyy').format(date);
+    try {
+      final date = event.eventDate is DateTime 
+          ? event.eventDate 
+          : DateTime.parse(event.eventDate.toString());
+      return DateFormat('MMM dd, yyyy').format(date);
+    } catch (e) {
+      return DateFormat('MMM dd, yyyy').format(event.eventDate);
+    }
   }
 
   String _formatEventTime() {
-    final time = DateTime.parse(event.eventTime);
-    return DateFormat('HH:mm').format(time);
+    try {
+      // eventTime is a String in format "HH:mm"
+      return event.eventTime;
+    } catch (e) {
+      return event.eventTime;
+    }
   }
 
   void _onEventTap(BuildContext context) {

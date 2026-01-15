@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/network/api_client.dart';
 import '../../core/constants/api_constants.dart';
@@ -568,6 +569,75 @@ class AuthService {
       return {
         'success': false,
         'message': 'Network error. Please check your connection.',
+      };
+    }
+  }
+
+  // Upload Profile Picture
+  Future<Map<String, dynamic>> uploadProfilePicture(String filePath) async {
+    try {
+      print('📤 Starting upload profile picture from: $filePath');
+      
+      // Check if file exists
+      final file = File(filePath);
+      if (!await file.exists()) {
+        print('❌ File does not exist: $filePath');
+        return {
+          'success': false,
+          'message': 'Image file not found. Please try selecting the image again.',
+        };
+      }
+
+      // Check file size (max 5MB)
+      final fileSize = await file.length();
+      print('📊 File size: ${fileSize / 1024 / 1024} MB');
+      if (fileSize > 5 * 1024 * 1024) {
+        return {
+          'success': false,
+          'message': 'Image file is too large. Maximum size is 5MB.',
+        };
+      }
+
+      print('📡 Uploading to: ${ApiConstants.uploadImage}');
+      final response = await _apiClient.uploadFile(
+        ApiConstants.uploadImage,
+        filePath,
+        fieldName: 'file',
+      );
+
+      print('📥 Upload response status: ${response.statusCode}');
+      print('📥 Upload response data: ${response.data}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = response.data;
+        if (data['success'] == true) {
+          final imageUrl = data['data']?['url'] ?? data['data'];
+          print('✅ Upload successful. Image URL: $imageUrl');
+          return {
+            'success': true,
+            'message': 'Profile picture uploaded successfully',
+            'url': imageUrl,
+          };
+        } else {
+          print('❌ Upload failed: ${data['message']}');
+          return {
+            'success': false,
+            'message': data['message'] ?? 'Failed to upload profile picture',
+          };
+        }
+      }
+      
+      print('❌ Upload failed with status: ${response.statusCode}');
+      return {
+        'success': false,
+        'message': response.data['message'] ?? 'Failed to upload profile picture',
+      };
+    } catch (e, stackTrace) {
+      print('❌ Upload profile picture error: $e');
+      print('Stack trace: $stackTrace');
+      return {
+        'success': false,
+        'message': 'Network error. Please check your connection. Error: ${e.toString()}',
       };
     }
   }

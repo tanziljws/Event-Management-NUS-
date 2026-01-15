@@ -523,26 +523,28 @@ class _UpgradePageState extends State<UpgradePage> with TickerProviderStateMixin
     String? Function(String?)? validator,
   }) {
     return TextFormField(
-              controller: controller,
+      controller: controller,
       keyboardType: keyboardType,
-              maxLines: maxLines,
-              decoration: InputDecoration(
-                labelText: label,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: label,
         hintText: hint,
-        labelStyle: const TextStyle(color: Color(0xFF2563EB)),
-                border: OutlineInputBorder(
+        labelStyle: const TextStyle(color: Colors.black87),
+        hintStyle: TextStyle(color: Colors.grey[600]),
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFF2563EB)),
-                ),
-                enabledBorder: OutlineInputBorder(
+        ),
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFF2563EB)),
-                ),
-                focusedBorder: OutlineInputBorder(
+        ),
+        focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFF2563EB), width: 2),
-                ),
-                filled: true,
+        ),
+        filled: true,
         fillColor: Colors.grey[50],
         prefixIcon: Icon(icon, color: const Color(0xFF2563EB)),
       ),

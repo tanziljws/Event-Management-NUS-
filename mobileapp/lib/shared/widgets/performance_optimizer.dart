@@ -209,7 +209,6 @@ class OptimizedScrollView extends StatelessWidget {
     return SingleChildScrollView(
       controller: controller,
       padding: padding,
-      shrinkWrap: shrinkWrap,
       physics: physics,
       reverse: reverse,
       keyboardDismissBehavior: keyboardDismissBehavior,

@@ -31,8 +31,6 @@ class SafeMediaQuery {
       disableAnimations: false,
       boldText: false,
       navigationMode: NavigationMode.traditional,
-      gestureSettings: DeviceGestureSettings(touchSlop: null),
-      displayFeatures: <DisplayFeature>[],
     );
   }
   

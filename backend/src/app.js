@@ -475,6 +475,16 @@ const startServer = async () => {
             logger.warn('⚠️  Event reminder jobs warning:', error.message);
           }
         }, 700);
+
+        setTimeout(() => {
+          try {
+            const cleanupJob = require('./jobs/cleanupJob');
+            cleanupJob.start();
+            logger.info('✅ Cleanup job started');
+          } catch (error) {
+            logger.warn('⚠️  Cleanup job warning:', error.message);
+          }
+        }, 800);
       });
 
       server.on('error', (error) => {

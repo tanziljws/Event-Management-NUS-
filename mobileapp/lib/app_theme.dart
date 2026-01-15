@@ -74,8 +74,8 @@ class AppTheme {
       // Card Theme
       cardTheme: CardThemeData(
         color: cardColor,
-        elevation: 1, // Reduced elevation for better performance
-        shadowColor: Colors.black.withOpacity(0.05), // Lighter shadow
+        elevation: 0, // No elevation for better performance
+        shadowColor: Colors.transparent, // No shadow
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
@@ -256,14 +256,14 @@ class AppTheme {
         selectedItemColor: primaryColor,
         unselectedItemColor: textTertiaryColor,
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 0,
       ),
       
       // Floating Action Button Theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 0,
       ),
     );
   }
@@ -300,7 +300,7 @@ class AppTheme {
       // Card Theme
       cardTheme: CardThemeData(
         color: darkCardColor,
-        elevation: 2,
+        elevation: 0,
         shadowColor: Colors.black.withOpacity(0.3),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
@@ -482,14 +482,14 @@ class AppTheme {
         selectedItemColor: primaryColor,
         unselectedItemColor: darkTextTertiaryColor,
         type: BottomNavigationBarType.fixed,
-        elevation: 8,
+        elevation: 0,
       ),
       
       // Floating Action Button Theme
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
-        elevation: 4,
+        elevation: 0,
       ),
     );
   }

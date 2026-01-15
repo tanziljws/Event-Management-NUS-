@@ -30,13 +30,6 @@ class EventLocationMap extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 4), // Reduced margin
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(12),
@@ -67,13 +60,6 @@ class EventLocationMap extends StatelessWidget {
                         color: Colors.white,
                         width: 3,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
                     ),
                     child: const Icon(
                       Icons.location_on,

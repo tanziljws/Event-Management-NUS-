@@ -161,13 +161,6 @@ class _EventMapWidgetState extends State<EventMapWidget> {
                         color: Colors.blue,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 3),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
                       ),
                       child: const Icon(
                         Icons.my_location,
@@ -198,13 +191,6 @@ class _EventMapWidgetState extends State<EventMapWidget> {
                                   color: Colors.white,
                                   width: 2,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 6,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
                               ),
                               child: Icon(
                                 _getEventMarkerIcon(event),
@@ -273,7 +259,7 @@ class _EventMapWidgetState extends State<EventMapWidget> {
 
   Widget _buildEventDetailsCard(EventModel event) {
     return Card(
-      elevation: 8,
+      elevation: 0,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),

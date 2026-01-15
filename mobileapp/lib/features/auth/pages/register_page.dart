@@ -233,13 +233,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
                             borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           child: IconButton(
                             onPressed: () => context.go('/login'),
@@ -793,19 +786,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2563EB),
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF2563EB).withOpacity(0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
                               ),
                               child: ElevatedButton(
                                 onPressed: _handleRegister,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.transparent,
                                   shadowColor: Colors.transparent,
+                                  elevation: 0,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(16),
                                   ),

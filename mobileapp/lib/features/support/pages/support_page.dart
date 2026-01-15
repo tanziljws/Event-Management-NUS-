@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:go_router/go_router.dart';
 import '../../../core/constants/app_constants.dart';
+import '../../../shared/widgets/standard_page_header.dart';
 
 class SupportPage extends StatefulWidget {
   const SupportPage({super.key});
@@ -52,26 +53,20 @@ class _SupportPageState extends State<SupportPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppConstants.backgroundColor,
-      appBar: AppBar(
-        title: const Text('Support', style: TextStyle(color: Colors.black)),
-        backgroundColor: Colors.transparent,
-        foregroundColor: Colors.black,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            } else {
-              context.go('/home');
-            }
-          },
-        ),
-      ),
-      body: SingleChildScrollView(
+      body: Column(
+        children: [
+          StandardPageHeader(
+            title: 'Support',
+            onBackPressed: () {
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              } else {
+                context.go('/home');
+              }
+            },
+          ),
+          Expanded(
+            child: SingleChildScrollView(
         physics: const ClampingScrollPhysics(),
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -90,6 +85,9 @@ class _SupportPageState extends State<SupportPage> {
           ],
         ),
       ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -99,13 +97,6 @@ class _SupportPageState extends State<SupportPage> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,13 +217,6 @@ class _SupportPageState extends State<SupportPage> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: Colors.grey[200]!),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 6,
-              offset: const Offset(0, 1),
-            ),
-          ],
         ),
         child: Row(
           children: [
@@ -313,13 +297,6 @@ class _SupportPageState extends State<SupportPage> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.grey[200]!),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.03),
-                blurRadius: 6,
-                offset: const Offset(0, 1),
-              ),
-            ],
           ),
           child: Form(
             key: _formKey,
@@ -464,7 +441,7 @@ class _SupportPageState extends State<SupportPage> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      elevation: 2,
+                      elevation: 0,
                     ),
                     child: _isLoading
                         ? const SizedBox(

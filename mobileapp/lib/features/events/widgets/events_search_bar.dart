@@ -18,6 +18,8 @@ class EventsSearchBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       padding: const EdgeInsets.only(top: 20),
       child: TextField(
+        style: const TextStyle(color: Colors.grey),
+        cursorColor: Colors.grey,
         decoration: InputDecoration(
           hintText: hintText ?? 'Search events, venues, or categories...',
           hintStyle: TextStyle(

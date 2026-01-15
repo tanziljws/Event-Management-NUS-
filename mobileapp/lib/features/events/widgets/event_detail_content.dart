@@ -551,13 +551,6 @@ class _EventDetailContentState extends State<EventDetailContent>
                           indicator: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.05),
-                                blurRadius: 6,
-                                offset: const Offset(0, 2),
-                              ),
-                            ],
                           ),
                           labelColor: const Color(0xFF2563EB),
                           unselectedLabelColor: Colors.grey[600],
@@ -688,13 +681,6 @@ class _EventDetailContentState extends State<EventDetailContent>
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
         ),
         child: SafeArea(
           child: Column(

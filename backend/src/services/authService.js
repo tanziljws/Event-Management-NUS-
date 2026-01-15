@@ -33,7 +33,7 @@ const getAssignedEventIds = async (userId, role) => {
 const getAssignedOrganizerIds = async (userId, role) => {
   // Simulate assignment using user ID hash for consistent distribution
   const allOrganizers = await prisma.user.findMany({
-    where: { 
+    where: {
       role: 'ORGANIZER',
       verificationStatus: 'PENDING'
     },
@@ -89,12 +89,12 @@ const comparePassword = async (password, hashedPassword) => {
 // Register organizer with profile
 const registerOrganizerWithProfile = async (userData) => {
   try {
-    const { 
-      fullName, 
-      email, 
-      password, 
-      phoneNumber, 
-      address, 
+    const {
+      fullName,
+      email,
+      password,
+      phoneNumber,
+      address,
       lastEducation,
       organizerType,
       profileData = {}
@@ -107,16 +107,16 @@ const registerOrganizerWithProfile = async (userData) => {
 
     if (existingUser) {
       logger.info(`User exists: ${email}, verified: ${existingUser.emailVerified}`);
-      
+
       // If user exists but not verified, delete the old user and allow re-registration
       if (!existingUser.emailVerified) {
         logger.info(`Deleting unverified user for re-registration: ${email}`);
-        
+
         // Delete related OTP records first
         await prisma.otpVerification.deleteMany({
           where: { email },
         });
-        
+
         // Delete the unverified user (with error handling)
         try {
           await prisma.user.delete({
@@ -130,7 +130,7 @@ const registerOrganizerWithProfile = async (userData) => {
             throw deleteError;
           }
         }
-        
+
         logger.info(`Unverified user deleted successfully: ${email}`);
       } else {
         // User is already verified, cannot re-register
@@ -184,7 +184,7 @@ const registerOrganizerWithProfile = async (userData) => {
 
       // Validate required fields based on organizer type
       const documents = profileData.documents || [];
-      
+
       if (documents.length === 0) {
         throw new Error('At least one document is required');
       }
@@ -210,8 +210,8 @@ const registerOrganizerWithProfile = async (userData) => {
           });
           break;
         case 'COMMUNITY':
-          if (!profileData.communityName || !profileData.communityAddress || 
-              !profileData.communityPhone || !profileData.contactPerson) {
+          if (!profileData.communityName || !profileData.communityAddress ||
+            !profileData.communityPhone || !profileData.contactPerson) {
             throw new Error('Community name, address, phone, and contact person are required');
           }
           profile = await tx.communityProfile.create({
@@ -241,8 +241,8 @@ const registerOrganizerWithProfile = async (userData) => {
           });
           break;
         case 'INSTITUTION':
-          if (!profileData.institutionName || !profileData.institutionAddress || 
-              !profileData.institutionPhone || !profileData.contactPerson) {
+          if (!profileData.institutionName || !profileData.institutionAddress ||
+            !profileData.institutionPhone || !profileData.contactPerson) {
             throw new Error('Institution name, address, phone, and contact person are required');
           }
           profile = await tx.institutionProfile.create({
@@ -311,12 +311,12 @@ const registerOrganizerWithProfile = async (userData) => {
 // Register new user (legacy function for participants)
 const registerUser = async (userData) => {
   try {
-    const { 
-      fullName, 
-      email, 
-      password, 
-      phoneNumber, 
-      address, 
+    const {
+      fullName,
+      email,
+      password,
+      phoneNumber,
+      address,
       lastEducation,
       role = 'PARTICIPANT',
       organizerType,
@@ -334,16 +334,16 @@ const registerUser = async (userData) => {
 
     if (existingUser) {
       logger.info(`User exists: ${email}, verified: ${existingUser.emailVerified}`);
-      
+
       // If user exists but not verified, delete the old user and allow re-registration
       if (!existingUser.emailVerified) {
         logger.info(`Deleting unverified user for re-registration: ${email}`);
-        
+
         // Delete related OTP records first
         await prisma.otpVerification.deleteMany({
           where: { email },
         });
-        
+
         // Delete the unverified user (with error handling)
         try {
           await prisma.user.delete({
@@ -357,7 +357,7 @@ const registerUser = async (userData) => {
             throw deleteError;
           }
         }
-        
+
         logger.info(`Unverified user deleted successfully: ${email}`);
       } else {
         // User is already verified, cannot re-register
@@ -469,7 +469,7 @@ const resendOtp = async (email) => {
 
     // Delete old OTP records for this email
     await prisma.otpVerification.deleteMany({
-      where: { 
+      where: {
         email,
         purpose: 'EMAIL_VERIFICATION'
       },
@@ -512,7 +512,7 @@ const resendOtp = async (email) => {
 const verifyEmail = async (email, otpCode) => {
   try {
     logger.info(`Verifying OTP for email: ${email}, OTP: ${otpCode}`);
-    
+
     // Find valid OTP
     const otpRecord = await prisma.otpVerification.findFirst({
       where: {
@@ -571,19 +571,19 @@ const verifyEmail = async (email, otpCode) => {
 const loginUser = async (email, password) => {
   try {
     console.log('🔍 Login attempt:', { email, passwordLength: password.length });
-    
+
     // Debug: Check database connection
     console.log('🔍 Database connection check...');
     const dbCheck = await prisma.user.count();
     console.log('📊 Total users in database:', dbCheck);
-    
+
     // Debug: Check if user exists with different query
     const userExists = await prisma.user.findFirst({
       where: { email: email },
       select: { email: true, role: true }
     });
     console.log('🔍 User exists check:', userExists);
-    
+
     // Find user (exclude metadata for now since it might not exist in database yet)
     const user = await prisma.user.findUnique({
       where: { email },
@@ -616,11 +616,11 @@ const loginUser = async (email, password) => {
       throw new Error('Invalid email or password');
     }
 
-    console.log('✅ User found:', { 
-      email: user.email, 
-      emailVerified: user.emailVerified, 
+    console.log('✅ User found:', {
+      email: user.email,
+      emailVerified: user.emailVerified,
       verificationStatus: user.verificationStatus,
-      role: user.role 
+      role: user.role
     });
 
     // Check if email is verified
@@ -632,7 +632,7 @@ const loginUser = async (email, password) => {
     // Compare password
     const isPasswordValid = await comparePassword(password, user.password);
     console.log('🔑 Password comparison result:', isPasswordValid);
-    
+
     if (!isPasswordValid) {
       console.log('❌ Invalid password for:', email);
       throw new Error('Invalid email or password');
@@ -749,6 +749,7 @@ const forgotPassword = async (email) => {
         fullName: true,
         emailVerified: true,
         verificationStatus: true,
+        metadata: true,
       },
     });
 
@@ -892,7 +893,7 @@ const logoutUser = async (userId, ipAddress, userAgent) => {
     // Invalidate all tokens by incrementing tokenVersion
     await prisma.user.update({
       where: { id: userId },
-      data: { 
+      data: {
         tokenVersion: { increment: 1 }
       },
     });
@@ -939,7 +940,36 @@ const updateUserProfile = async (userId, updateData) => {
     if (phoneNumber !== undefined) updateFields.phoneNumber = phoneNumber;
     if (address !== undefined) updateFields.address = address;
     if (lastEducation !== undefined) updateFields.lastEducation = lastEducation;
-    if (profilePicture !== undefined) updateFields.profilePicture = profilePicture;
+
+    // Handle profile picture update
+    if (profilePicture !== undefined) {
+      updateFields.profilePicture = profilePicture;
+
+      // Delete old profile picture if exists and different from new one
+      // Also ignore if the new profile picture is the same as the old one (shouldn't happen but safe to check)
+      if (existingUser.profilePicture && existingUser.profilePicture !== profilePicture) {
+        // Extract filename from URL (e.g. /uploads/documents/filename.jpg -> filename.jpg)
+        // Adjust based on how URLs are stored. Assuming relative path /uploads/...
+        // But uploadService handles deletion by filename or full path usually? 
+        // Let's check uploadService.js again. It takes a filename.
+        // If stored as URL /uploads/documents/file.pdf, we need to extract basename.
+
+        try {
+          const uploadService = require('./uploadService');
+          const path = require('path');
+          const oldFilename = path.basename(existingUser.profilePicture);
+
+          // Only delete if it looks like a file managed by us (security check)
+          if (oldFilename && oldFilename.length > 0) {
+            uploadService.deleteDocument(oldFilename);
+            logger.info(`Cleaned up old profile picture: ${oldFilename}`);
+          }
+        } catch (cleanupError) {
+          // Don't fail the update if cleanup fails, just log it
+          logger.error('Failed to cleanup old profile picture:', cleanupError);
+        }
+      }
+    }
 
     // Update user
     const user = await prisma.user.update({

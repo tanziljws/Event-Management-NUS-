@@ -8,7 +8,7 @@ const logger = require('../config/logger');
 const generateTicketQRCode = async (registrationId, registrationToken) => {
   try {
     const uploadsDir = path.join(__dirname, '../../uploads/tickets');
-    
+
     // Ensure directory exists
     await fs.mkdir(uploadsDir, { recursive: true });
 
@@ -111,7 +111,7 @@ const getTicketByRegistration = async (registrationId, participantId) => {
     let qrCodeUrl = registration.qrCodeUrl;
     if (!qrCodeUrl) {
       qrCodeUrl = await generateTicketQRCode(registrationId, registration.registrationToken);
-      
+
       // Update registration with QR code URL
       await prisma.eventRegistration.update({
         where: { id: registrationId },
@@ -125,7 +125,7 @@ const getTicketByRegistration = async (registrationId, participantId) => {
       const payment = registration.payments[0];
       if (payment && payment.amount) {
         const paymentAmount = parseFloat(payment.amount.toString());
-        
+
         // Try to find ticketType by matching payment amount (with small tolerance for rounding)
         const ticketTypes = await prisma.ticketType.findMany({
           where: {
@@ -143,14 +143,14 @@ const getTicketByRegistration = async (registrationId, participantId) => {
             badgeText: true,
           },
         });
-        
+
         // Find ticket type with matching price (allow small difference for rounding)
         const matchingTicketType = ticketTypes.find(tt => {
           if (!tt.price) return false;
           const ttPrice = parseFloat(tt.price.toString());
           return Math.abs(ttPrice - paymentAmount) < 0.01; // Allow 0.01 difference
         });
-        
+
         if (matchingTicketType) {
           logger.info(`🎫 Found ticketType by payment amount match: ${matchingTicketType.name} (${matchingTicketType.color}) for registration ${registrationId}`);
           ticketType = matchingTicketType;
@@ -172,8 +172,8 @@ const getTicketByRegistration = async (registrationId, participantId) => {
       registrationToken: registration.registrationToken,
       qrCodeUrl: qrCodeUrl || registration.qrCodeUrl,
       hasAttended: registration.hasAttended,
-      registeredAt: registration.registeredAt instanceof Date 
-        ? registration.registeredAt.toISOString() 
+      registeredAt: registration.registeredAt instanceof Date
+        ? registration.registeredAt.toISOString()
         : registration.registeredAt?.toString() || new Date().toISOString(),
       ticketTypeId: registration.ticketTypeId || ticketType?.id || null,
       event: {
@@ -300,43 +300,56 @@ const getUserTickets = async (participantId, filters = {}) => {
       prisma.eventRegistration.count({ where }),
     ]);
 
-    // Format registrations to ensure proper JSON serialization
-    // Also try to find missing ticketType by matching payment amount
+    // Batch fetch ticket types for all events to avoid N+1 queries
+    const eventIds = [...new Set(registrations.map(r => r.eventId))];
+    const allTicketTypes = await prisma.ticketType.findMany({
+      where: {
+        eventId: { in: eventIds },
+        isActive: true,
+      },
+      select: {
+        id: true,
+        eventId: true, // Needed for grouping
+        name: true,
+        description: true,
+        price: true,
+        isFree: true,
+        color: true,
+        icon: true,
+        badgeText: true,
+      },
+    });
+
+    // Group ticket types by eventId
+    const ticketTypesByEvent = new Map();
+    allTicketTypes.forEach(tt => {
+      if (!ticketTypesByEvent.has(tt.eventId)) {
+        ticketTypesByEvent.set(tt.eventId, []);
+      }
+      ticketTypesByEvent.get(tt.eventId).push(tt);
+    });
+
+    // Format registrations
     const formattedRegistrations = await Promise.all(registrations.map(async (reg) => {
       let ticketType = reg.ticketType;
-      
+
       // If ticketType is missing but we have payment, try to find ticketType by matching payment amount
       if (!ticketType && reg.payments && reg.payments.length > 0) {
         const payment = reg.payments[0];
         if (payment && payment.amount) {
           try {
             const paymentAmount = parseFloat(payment.amount.toString());
-            
-            // Get all ticket types for this event
-            const ticketTypes = await prisma.ticketType.findMany({
-              where: {
-                eventId: reg.eventId,
-                isActive: true,
-              },
-              select: {
-                id: true,
-                name: true,
-                description: true,
-                price: true,
-                isFree: true,
-                color: true,
-                icon: true,
-                badgeText: true,
-              },
-            });
-            
+
+            // Get ticket types from in-memory map instead of DB query
+            const ticketTypes = ticketTypesByEvent.get(reg.eventId) || [];
+
             // Find ticket type with matching price (allow small difference for rounding)
             const matchingTicketType = ticketTypes.find(tt => {
               if (!tt.price) return false;
               const ttPrice = parseFloat(tt.price.toString());
               return Math.abs(ttPrice - paymentAmount) < 0.01; // Allow 0.01 difference
             });
-            
+
             if (matchingTicketType) {
               logger.info(`🎫 Found ticketType by payment amount match: ${matchingTicketType.name} (${matchingTicketType.color}) for registration ${reg.id}`);
               ticketType = matchingTicketType;
@@ -359,7 +372,7 @@ const getUserTickets = async (participantId, filters = {}) => {
           }
         }
       }
-      
+
       return {
         id: reg.id,
         eventId: reg.eventId,
@@ -367,8 +380,8 @@ const getUserTickets = async (participantId, filters = {}) => {
         registrationToken: reg.registrationToken,
         qrCodeUrl: reg.qrCodeUrl,
         hasAttended: reg.hasAttended,
-        registeredAt: reg.registeredAt instanceof Date 
-          ? reg.registeredAt.toISOString() 
+        registeredAt: reg.registeredAt instanceof Date
+          ? reg.registeredAt.toISOString()
           : reg.registeredAt?.toString() || new Date().toISOString(),
         ticketTypeId: reg.ticketTypeId || ticketType?.id || null,
         event: {
@@ -411,7 +424,7 @@ const getUserTickets = async (participantId, filters = {}) => {
 const verifyTicketQRCode = async (qrCodeData) => {
   try {
     const data = JSON.parse(qrCodeData);
-    
+
     if (data.type !== 'TICKET') {
       throw new Error('Invalid ticket QR code');
     }
@@ -552,16 +565,16 @@ const adminScanQRCode = async (qrCodeData, eventId) => {
     }
 
     // Find registration - handle both cases: with registrationId and without
-    const whereClause = qrData.registrationId 
+    const whereClause = qrData.registrationId
       ? {
-          id: qrData.registrationId,
-          registrationToken: qrData.token,
-          eventId,
-        }
+        id: qrData.registrationId,
+        registrationToken: qrData.token,
+        eventId,
+      }
       : {
-          registrationToken: qrData.token,
-          eventId,
-        };
+        registrationToken: qrData.token,
+        eventId,
+      };
 
     const registration = await prisma.eventRegistration.findFirst({
       where: whereClause,

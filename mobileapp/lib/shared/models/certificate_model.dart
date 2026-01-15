@@ -2,30 +2,36 @@ import 'event_model.dart';
 
 class CertificateModel {
   final String id;
-  final String certificateNumber;
-  final String certificateUrl;
-  final String verificationHash;
-  final DateTime issuedAt;
+  final String? certificateNumber;
+  final String? certificateUrl;
+  final String? verificationHash;
+  final DateTime? issuedAt;
+  final String? status; // 'available', 'ready', 'pending'
+  final String? eventEndDateTime; // ISO string
   final RegistrationInfo registration;
 
   CertificateModel({
     required this.id,
-    required this.certificateNumber,
-    required this.certificateUrl,
-    required this.verificationHash,
-    required this.issuedAt,
+    this.certificateNumber,
+    this.certificateUrl,
+    this.verificationHash,
+    this.issuedAt,
+    this.status,
+    this.eventEndDateTime,
     required this.registration,
   });
 
   factory CertificateModel.fromJson(Map<String, dynamic> json) {
     return CertificateModel(
       id: json['id'] ?? '',
-      certificateNumber: json['certificateNumber'] ?? '',
-      certificateUrl: json['certificateUrl'] ?? '',
-      verificationHash: json['verificationHash'] ?? '',
+      certificateNumber: json['certificateNumber'],
+      certificateUrl: json['certificateUrl'],
+      verificationHash: json['verificationHash'],
       issuedAt: json['issuedAt'] != null 
           ? DateTime.parse(json['issuedAt'])
-          : DateTime.now(),
+          : null,
+      status: json['status'] ?? 'pending', // 'available', 'ready', 'pending'
+      eventEndDateTime: json['eventEndDateTime'],
       registration: RegistrationInfo.fromJson(json['registration'] ?? {}),
     );
   }
@@ -36,7 +42,9 @@ class CertificateModel {
       'certificateNumber': certificateNumber,
       'certificateUrl': certificateUrl,
       'verificationHash': verificationHash,
-      'issuedAt': issuedAt.toIso8601String(),
+      'issuedAt': issuedAt?.toIso8601String(),
+      'status': status,
+      'eventEndDateTime': eventEndDateTime,
       'registration': registration.toJson(),
     };
   }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import '../models/event_model.dart';
-import '../models/registration_model.dart';
 import '../../features/auth/bloc/auth_bloc.dart';
 
 class FloatingRegisterButton extends StatelessWidget {
@@ -40,13 +39,6 @@ class FloatingRegisterButton extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
         ),
         child: Material(
           color: Colors.transparent,

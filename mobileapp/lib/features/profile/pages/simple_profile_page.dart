@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/app_constants.dart';
+import '../../../core/constants/api_constants.dart';
 import '../../../features/auth/bloc/auth_bloc.dart';
 import '../../../shared/models/user_model.dart';
 
@@ -136,28 +138,10 @@ class SimpleProfilePage extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Colors.grey.shade300),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundColor: AppConstants.primaryColor.withValues(alpha: 0.2),
-            child: Text(
-              user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
-              style: const TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
-                color: AppConstants.primaryColor,
-              ),
-            ),
-          ),
+          _buildProfileAvatar(user),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -227,7 +211,7 @@ class SimpleProfilePage extends StatelessWidget {
           _buildInfoRow('Email', user.email),
           _buildInfoRow('Phone', user.phoneNumber ?? 'Not provided'),
           _buildInfoRow('Role', _getRoleDisplayName(user.role)),
-          _buildInfoRow('Member Since', _formatDate(user.createdAt.toString())),
+          _buildInfoRow('Member Since', _formatDate(user.createdAt)),
           if (user.emailVerified)
             _buildInfoRow('Email Verified', 'Yes'),
         ],
@@ -399,10 +383,9 @@ class SimpleProfilePage extends StatelessWidget {
     }
   }
 
-  String _formatDate(String? dateString) {
-    if (dateString == null) return 'Not available';
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Not available';
     try {
-      final date = DateTime.parse(dateString);
       return '${date.day}/${date.month}/${date.year}';
     } catch (e) {
       return 'Invalid date';
@@ -414,12 +397,21 @@ class SimpleProfilePage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Change Password'),
-        content: const Text('Password change functionality will be implemented soon.'),
+        title: const Text(
+          'Change Password',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: const Text(
+          'Password change functionality will be implemented soon.',
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -431,22 +423,37 @@ class SimpleProfilePage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('About'),
+        title: const Text(
+          'About',
+          style: TextStyle(color: Colors.black),
+        ),
         content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Nusa Mobile App'),
+            Text(
+              'Nusa Mobile App',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('Version: 1.0.0'),
+            Text(
+              'Version: 1.0.0',
+              style: TextStyle(color: Colors.black),
+            ),
             SizedBox(height: 8),
-            Text('A modern event management solution for participants and organizers.'),
+            Text(
+              'A modern event management solution for participants and organizers.',
+              style: TextStyle(color: Colors.black),
+            ),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('OK'),
+            child: const Text(
+              'OK',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
         ],
       ),
@@ -458,12 +465,21 @@ class SimpleProfilePage extends StatelessWidget {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: const Text(
+          'Logout',
+          style: TextStyle(color: Colors.black),
+        ),
+        content: const Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(color: Colors.black),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -484,5 +500,84 @@ class SimpleProfilePage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getImageUrl(String? url) {
+    if (url == null || url.isEmpty) return '';
+    
+    // If already full URL, return as is
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    
+    // If starts with /, it's a relative path
+    if (url.startsWith('/')) {
+      return '${ApiConstants.fileBaseUrl}$url';
+    }
+    
+    // Otherwise, prepend base URL with /
+    return '${ApiConstants.fileBaseUrl}/$url';
+  }
+
+  Widget _buildProfileAvatar(UserModel user) {
+    try {
+      final profilePictureUrl = user.profilePicture;
+      final imageUrl = profilePictureUrl != null && profilePictureUrl.isNotEmpty
+          ? _getImageUrl(profilePictureUrl)
+          : null;
+
+      if (kDebugMode) {
+        print('📸 SimpleProfile - Profile picture URL: $profilePictureUrl');
+        print('📸 SimpleProfile - Final image URL: $imageUrl');
+      }
+
+      // If no image URL, return avatar with initial
+      if (imageUrl == null || imageUrl.isEmpty) {
+        return CircleAvatar(
+          radius: 40,
+          backgroundColor: AppConstants.primaryColor.withValues(alpha: 0.2),
+          child: Text(
+            user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
+            style: const TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: AppConstants.primaryColor,
+            ),
+          ),
+        );
+      }
+
+      // If image URL exists, use NetworkImage with error handling
+      return CircleAvatar(
+        radius: 40,
+        backgroundColor: AppConstants.primaryColor.withValues(alpha: 0.2),
+        backgroundImage: NetworkImage(imageUrl),
+        onBackgroundImageError: (exception, stackTrace) {
+          // Handle image loading error - will show fallback
+          if (kDebugMode) {
+            print('❌ SimpleProfile - Error loading profile image: $exception');
+            print('❌ SimpleProfile - Image URL was: $imageUrl');
+          }
+        },
+        child: null,
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ SimpleProfile - Error building avatar: $e');
+      }
+      // Return fallback avatar on error
+      return CircleAvatar(
+        radius: 40,
+        backgroundColor: AppConstants.primaryColor.withValues(alpha: 0.2),
+        child: Text(
+          user.fullName.isNotEmpty ? user.fullName[0].toUpperCase() : 'U',
+          style: const TextStyle(
+            fontSize: 32,
+            fontWeight: FontWeight.bold,
+            color: AppConstants.primaryColor,
+          ),
+        ),
+      );
+    }
   }
 }

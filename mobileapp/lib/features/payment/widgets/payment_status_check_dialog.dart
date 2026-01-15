@@ -87,7 +87,11 @@ class _PaymentStatusCheckDialogState extends State<PaymentStatusCheckDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Payment Status'),
+      backgroundColor: Colors.white,
+      title: const Text(
+        'Payment Status',
+        style: TextStyle(color: Colors.black),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -95,11 +99,14 @@ class _PaymentStatusCheckDialogState extends State<PaymentStatusCheckDialog> {
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
           ],
-          Text(_status),
+          Text(
+            _status,
+            style: const TextStyle(color: Colors.black),
+          ),
           const SizedBox(height: 16),
           const Text(
             'Please complete your payment in the external app, then return here.',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
+            style: TextStyle(fontSize: 12, color: Colors.black87),
             textAlign: TextAlign.center,
           ),
         ],
@@ -109,7 +116,10 @@ class _PaymentStatusCheckDialogState extends State<PaymentStatusCheckDialog> {
           onPressed: _isChecking ? null : () {
             Navigator.of(context).pop();
           },
-          child: const Text('Cancel'),
+          child: const Text(
+            'Cancel',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
         // Dev mode: Skip payment button
         TextButton(
@@ -125,7 +135,10 @@ class _PaymentStatusCheckDialogState extends State<PaymentStatusCheckDialog> {
         if (!_isChecking)
           TextButton(
             onPressed: _checkPaymentStatus,
-            child: const Text('Check Again'),
+            child: const Text(
+              'Check Again',
+              style: TextStyle(color: Colors.black),
+            ),
           ),
       ],
     );

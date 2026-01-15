@@ -309,13 +309,6 @@ class _ProgressiveRegisterPageState extends State<ProgressiveRegisterPage> {
                               decoration: BoxDecoration(
                                 color: const Color(0xFF2563EB),
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: const Color(0xFF2563EB).withOpacity(0.3),
-                                    blurRadius: 15,
-                                    offset: const Offset(0, 8),
-                                  ),
-                                ],
                               ),
                               child: ElevatedButton(
                                 onPressed: _nextStep,
@@ -793,13 +786,6 @@ class _ProgressiveRegisterPageState extends State<ProgressiveRegisterPage> {
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.grey[200]!),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -954,13 +940,6 @@ class _ProgressiveRegisterPageState extends State<ProgressiveRegisterPage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.grey[200]!),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

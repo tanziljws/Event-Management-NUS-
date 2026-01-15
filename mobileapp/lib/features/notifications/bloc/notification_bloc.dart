@@ -45,21 +45,39 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
 
       AppLogger.info('Loading notifications: page ${event.page}', 'NotificationBloc');
 
-      final response = await _apiClient.get('/notifications', queryParameters: {
-        'page': event.page,
-        'limit': event.limit,
-        'type': event.forceRefresh ? 'refresh' : 'load',
-      });
+      try {
+        final response = await _apiClient.get('/notifications', queryParameters: {
+          'page': event.page,
+          'limit': event.limit,
+        });
 
+        AppLogger.info('API Response status: ${response.statusCode}', 'NotificationBloc');
+        AppLogger.info('API Response data: ${response.data}', 'NotificationBloc');
+      
       if (response.data['success'] == true) {
-        final notificationsData = response.data['data']['notifications'] as List<dynamic>;
+        final data = response.data['data'] as Map<String, dynamic>? ?? {};
+        final notificationsData = data['notifications'] as List<dynamic>? ?? [];
+        
+        AppLogger.info('Found ${notificationsData.length} notifications', 'NotificationBloc');
+        
         final notifications = notificationsData
-            .map((json) => NotificationModel.fromJson(json as Map<String, dynamic>))
+            .map((json) {
+              try {
+                return NotificationModel.fromJson(json as Map<String, dynamic>);
+              } catch (e) {
+                AppLogger.error('Error parsing notification: $e', 'NotificationBloc');
+                return null;
+              }
+            })
+            .whereType<NotificationModel>()
             .toList();
 
-        final unreadCount = response.data['data']['unreadCount'] as int;
-        final hasMore = response.data['data']['hasMore'] as bool;
-        final currentPage = response.data['data']['currentPage'] as int;
+        // Parse pagination if available
+        final pagination = data['pagination'] as Map<String, dynamic>?;
+        final unreadCount = data['unreadCount'] as int? ?? 0;
+        final hasMore = data['hasMore'] as bool? ?? 
+                       (pagination != null ? (pagination['page'] as int? ?? 1) < (pagination['pages'] as int? ?? 1) : false);
+        final currentPage = pagination?['page'] as int? ?? event.page;
 
         // Get current state
         final currentState = state;
@@ -69,6 +87,8 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           allNotifications = [...currentState.notifications, ...notifications];
         }
 
+        AppLogger.info('Emitting NotificationLoaded: ${allNotifications.length} notifications, unread: $unreadCount', 'NotificationBloc');
+        
         emit(NotificationLoaded(
           notifications: allNotifications,
           unreadCount: unreadCount,
@@ -77,13 +97,30 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
           settings: currentState is NotificationLoaded ? currentState.settings : {},
         ));
 
-        AppLogger.info('Loaded ${notifications.length} notifications', 'NotificationBloc');
+        AppLogger.info('Successfully loaded ${notifications.length} notifications', 'NotificationBloc');
       } else {
-        emit(NotificationFailure(response.data['message'] ?? 'Failed to load notifications'));
+        final errorMsg = response.data['message'] ?? response.data['error'] ?? 'Failed to load notifications';
+        AppLogger.error('API returned error: $errorMsg', 'NotificationBloc');
+        emit(NotificationFailure(errorMsg));
       }
-    } catch (e) {
+      } catch (apiError) {
+        AppLogger.error('API call failed: $apiError', 'NotificationBloc');
+        // Don't rethrow, handle it here to prevent infinite loading
+        emit(NotificationFailure('Network error: ${apiError.toString()}'));
+        return;
+      }
+    } catch (e, stackTrace) {
       AppLogger.error('Failed to load notifications: $e', 'NotificationBloc');
-      emit(NotificationFailure('Failed to load notifications: $e'));
+      AppLogger.error('Stack trace: $stackTrace', 'NotificationBloc');
+      
+      // Always emit a state, even on error, to prevent infinite loading
+      final errorMessage = e.toString().contains('SocketException') || 
+                          e.toString().contains('TimeoutException') ||
+                          e.toString().contains('Network')
+          ? 'No internet connection. Please check your network.'
+          : 'Failed to load notifications: ${e.toString()}';
+      
+      emit(NotificationFailure(errorMessage));
     }
   }
 
@@ -347,7 +384,24 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
       final response = await _apiClient.get('/notifications/settings');
 
       if (response.data['success'] == true) {
-        final settings = Map<String, bool>.from(response.data['data']['settings']);
+        // Settings structure: { email: {...}, push: {...}, inApp: {...} }
+        // We need to flatten it to Map<String, bool>
+        final settingsData = response.data['data']['settings'] as Map<String, dynamic>?;
+        final settings = <String, bool>{};
+        
+        if (settingsData != null) {
+          // Flatten nested settings structure
+          settingsData.forEach((category, categorySettings) {
+            if (categorySettings is Map<String, dynamic>) {
+              categorySettings.forEach((key, value) {
+                if (value is bool) {
+                  settings['$category.$key'] = value;
+                }
+              });
+            }
+          });
+        }
+        
         emit(NotificationSettingsUpdated(settings));
         
         // Update the current state

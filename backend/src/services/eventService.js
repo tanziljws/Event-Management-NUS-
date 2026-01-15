@@ -288,20 +288,16 @@ const createEvent = async (eventData, creatorId, creatorRole = 'ADMIN') => {
       console.log(`✅ Creating ${ticketTypesArray.length} ticket types for event: ${event.id}`);
 
       try {
-        for (let i = 0; i < ticketTypesArray.length; i++) {
+        const ticketTypeCreationPromises = ticketTypesArray.map((ticketType, i) => {
           const ticketTypeData = {
-            ...ticketTypesArray[i],
+            ...ticketType,
             sortOrder: i,
           };
-
           console.log(`Creating ticket type ${i + 1}/${ticketTypesArray.length}: ${ticketTypeData.name}`);
+          return ticketTypeService.createTicketType(event.id, ticketTypeData, creatorId);
+        });
 
-          await ticketTypeService.createTicketType(
-            event.id,
-            ticketTypeData,
-            creatorId
-          );
-        }
+        await Promise.all(ticketTypeCreationPromises);
 
         logger.info(`✅ Successfully created ${ticketTypes.length} ticket types for event: ${event.id}`);
       } catch (ticketError) {
@@ -803,7 +799,7 @@ const updateEvent = async (eventId, eventData, adminId) => {
         ? new Date(eventData.registrationDeadline)
         : undefined,
     };
-    
+
     // Trim privatePassword if it's being updated
     if (updateData.privatePassword !== undefined) {
       updateData.privatePassword = updateData.privatePassword ? updateData.privatePassword.trim() : null;
@@ -969,9 +965,9 @@ const registerForEvent = async (eventId, participantId, privatePassword) => {
         // Trim whitespace from both passwords for comparison
         const trimmedInputPassword = (privatePassword || '').trim();
         const trimmedStoredPassword = (event.privatePassword || '').trim();
-        
+
         logger.info(`Private event password check: Event ID: ${eventId}, Input length: ${trimmedInputPassword.length}, Stored length: ${trimmedStoredPassword.length}`);
-        
+
         if (trimmedStoredPassword !== trimmedInputPassword) {
           logger.warn(`Password mismatch for event ${eventId}: Input="${trimmedInputPassword}", Stored="${trimmedStoredPassword}"`);
           throw new Error('Invalid password for private event.');
@@ -1250,9 +1246,9 @@ const registerForEventAfterPayment = async (eventId, participantId, paymentId, p
         // Trim whitespace from both passwords for comparison
         const trimmedInputPassword = (privatePassword || '').trim();
         const trimmedStoredPassword = (event.privatePassword || '').trim();
-        
+
         logger.info(`Private event password check (after payment): Event ID: ${eventId}, Input length: ${trimmedInputPassword.length}, Stored length: ${trimmedStoredPassword.length}`);
-        
+
         if (trimmedStoredPassword !== trimmedInputPassword) {
           logger.warn(`Password mismatch for event ${eventId} (after payment): Input="${trimmedInputPassword}", Stored="${trimmedStoredPassword}"`);
           throw new Error('Invalid password for private event.');
@@ -2970,7 +2966,7 @@ const getOrganizerEventAnalytics = async (eventId, organizerId) => {
       // Get payment date from created_at or paid_at
       const paymentDate = payment.paidAt || payment.createdAt;
       const dateStr = new Date(paymentDate).toISOString().split('T')[0];
-      
+
       if (!paymentsByDate.has(dateStr)) {
         paymentsByDate.set(dateStr, 0);
       }
@@ -2981,7 +2977,7 @@ const getOrganizerEventAnalytics = async (eventId, organizerId) => {
     activeRegistrations.forEach(registration => {
       const regDate = new Date(registration.registeredAt);
       const dateStr = regDate.toISOString().split('T')[0];
-      
+
       if (!dailyRegistrationsMap.has(dateStr)) {
         dailyRegistrationsMap.set(dateStr, {
           date: dateStr,
@@ -3011,21 +3007,21 @@ const getOrganizerEventAnalytics = async (eventId, organizerId) => {
     // Fill in missing dates from event creation to latest registration or payment
     const latestRegistration = activeRegistrations.length > 0
       ? activeRegistrations.reduce((latest, r) => {
-          const regDate = new Date(r.registeredAt);
-          return regDate > latest ? regDate : latest;
-        }, new Date(eventCreatedAt))
+        const regDate = new Date(r.registeredAt);
+        return regDate > latest ? regDate : latest;
+      }, new Date(eventCreatedAt))
       : new Date(eventCreatedAt);
-    
+
     // Also check latest payment date
     const latestPayment = allPayments.length > 0
       ? allPayments.reduce((latest, p) => {
-          const payDate = p.paidAt ? new Date(p.paidAt) : new Date(p.createdAt);
-          return payDate > latest ? payDate : latest;
-        }, new Date(eventCreatedAt))
+        const payDate = p.paidAt ? new Date(p.paidAt) : new Date(p.createdAt);
+        return payDate > latest ? payDate : latest;
+      }, new Date(eventCreatedAt))
       : new Date(eventCreatedAt);
-    
+
     const latestDate = latestPayment > latestRegistration ? latestPayment : latestRegistration;
-    
+
     const dailyRegistrations = [];
     const currentDate = new Date(eventCreatedAt);
     while (currentDate <= latestDate) {
@@ -3103,7 +3099,7 @@ const getOrganizerEventAnalytics = async (eventId, organizerId) => {
           if (registration.hasAttended) {
             stats.attendance += 1;
           }
-          
+
           // Calculate revenue from payments for this registration
           registration.payments.forEach(payment => {
             const amount = parseFloat(payment.amount.toString());
@@ -3139,10 +3135,10 @@ const getOrganizerEventAnalytics = async (eventId, organizerId) => {
       const percentage = totalRevenue > 0 ? (stats.revenue / totalRevenue) * 100 : 0;
       const soldPercentage = stats.capacity > 0 ? (stats.sold / stats.capacity) * 100 : 0;
       const attendanceRate = stats.sold > 0 ? (stats.attendance / stats.sold) * 100 : 0;
-      
+
       // Remove countedPaymentIds Set before returning (not serializable to JSON)
       const { countedPaymentIds, ...statsWithoutSet } = stats;
-      
+
       ticketTypeBreakdown.push({
         ...statsWithoutSet,
         percentage,
